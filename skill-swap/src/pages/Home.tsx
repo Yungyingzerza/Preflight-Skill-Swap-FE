@@ -5,7 +5,7 @@ import WebDev from "@assets/html-css-collage-concept-with-person.jpg";
 import Photography from "@assets/pexels-andre-furtado-43594-1264210.jpg";
 import Cooking from "@assets/pexels-conojeghuo-175753.jpg";
 import LanguageExchange from "@assets/medium-shot-smiley-friends-with-books.jpg";
-
+import Footer from "@components/Footer";
 export default function Home() {
   return (
     <>
@@ -14,13 +14,14 @@ export default function Home() {
         <img
           src={discussingImage}
           alt="Business Executives Discussing Document"
-          className="w-full h-full object-cover opacity-25"
+          className="w-full h-full object-cover opacity-30 brightness-40"
         />
+
         <div className="text-center mt-4 absolute flex flex-col justify-center items-center gap-5">
-          <h1 className="archivo-800 text-6xl">
+          <h1 className="archivo-800 text-4xl sm:text-5xl md:text-6xl">
             Unlock Your Potential. Share Your Skills. Connect & Grow.
           </h1>
-          <p className="archivo-400 text-[#8C8D8BFF] text-2xl">
+          <p className="archivo-400 text-[#8C8D8BFF] text-lg sm:text-xl md:text-2xl">
             SkillSwap is your vibrant community for learning new talents and
             sharing your expertise. Discover, connect, and thrive through
             meaningful skill exchanges.
@@ -32,9 +33,11 @@ export default function Home() {
       </section>
 
       <section className="flex flex-col justify-center items-center gap-5 mt-10">
-        <h2 className="archivo-700 text-5xl">How SkillSwap Works</h2>
+        <h2 className="archivo-700 text-5xl text-center">
+          How SkillSwap Works
+        </h2>
 
-        <div className="flex flex-row gap-10 p-10 justify-center">
+        <div className="flex flex-row gap-10 p-10 justify-center flex-wrap">
           <div className="flex flex-col items-center border border-[#EBEBEAFF] p-5 rounded-lg shadow-sm gap-3 max-w-sm hover:border-primary">
             <svg
               className="w-12 h-12 fill-primary"
@@ -153,11 +156,12 @@ export default function Home() {
       </section>
 
       <section className="flex flex-col justify-center items-center gap-5 mt-10">
-        <h2 className="archivo-700 text-5xl">Explore Popular Skills</h2>
+        <h2 className="archivo-700 text-5xl text-center">
+          Explore Popular Skills
+        </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 p-10">
-
-          <div className="card bg-base-100 image-full w-96 shadow-sm cursor-pointer hover:scale-105 transition-transform duration-300">
+          <div className="card bg-base-100 image-full w-56 lg:w-72 shadow-sm cursor-pointer hover:scale-105 transition-transform duration-300">
             <figure>
               <img src={GuitarLesson} alt="Guitar Lesson" />
             </figure>
@@ -166,7 +170,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="card bg-base-100 image-full w-96 shadow-sm cursor-pointer hover:scale-105 transition-transform duration-300">
+          <div className="card bg-base-100 image-full w-56 lg:w-72 shadow-sm cursor-pointer hover:scale-105 transition-transform duration-300">
             <figure>
               <img src={WebDev} alt="Web Development" />
             </figure>
@@ -175,7 +179,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="card bg-base-100 image-full w-96 shadow-sm cursor-pointer hover:scale-105 transition-transform duration-300">
+          <div className="card bg-base-100 image-full w-56 lg:w-72 shadow-sm cursor-pointer hover:scale-105 transition-transform duration-300">
             <figure>
               <img src={Photography} alt="Photography" />
             </figure>
@@ -184,7 +188,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="card bg-base-100 image-full w-96 shadow-sm cursor-pointer hover:scale-105 transition-transform duration-300">
+          <div className="card bg-base-100 image-full w-56 lg:w-72 shadow-sm cursor-pointer hover:scale-105 transition-transform duration-300">
             <figure>
               <img src={Cooking} alt="Cooking" />
             </figure>
@@ -193,7 +197,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="card bg-base-100 image-full w-96 shadow-sm cursor-pointer hover:scale-105 transition-transform duration-300">
+          <div className="card bg-base-100 image-full w-56 lg:w-72 shadow-sm cursor-pointer hover:scale-105 transition-transform duration-300">
             <figure>
               <img src={LanguageExchange} alt="Language Exchange" />
             </figure>
@@ -205,15 +209,14 @@ export default function Home() {
       </section>
 
       <section className="flex flex-col justify-center items-center gap-10 mt-10 mb-10">
-        <h2 className="archivo-700 text-5xl">Ready to Start Your SkillSwap Journey?</h2>
-        <button className="btn btn-primary w-1/5 text-lg inter-400">Join the Community</button>
+        <h2 className="archivo-700 text-5xl text-center">
+          Ready to Start Your SkillSwap Journey?
+        </h2>
+        <button className="btn btn-primary w-64 lg:w-1/5 text-lg inter-400">
+          Join the Community
+        </button>
       </section>
-
-      <footer className="flex justify-center items-center pt-20 pb-5">
-        <p className="inter-400 text-sm text-[#8C8D8BFF]">
-          &copy; 2025 SkillSwap.
-        </p>
-      </footer>
+      <Footer />
     </>
   );
 }
