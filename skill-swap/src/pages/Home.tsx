@@ -5,7 +5,7 @@ import WebDev from "@assets/html-css-collage-concept-with-person.jpg";
 import Photography from "@assets/pexels-andre-furtado-43594-1264210.jpg";
 import Cooking from "@assets/pexels-conojeghuo-175753.jpg";
 import LanguageExchange from "@assets/medium-shot-smiley-friends-with-books.jpg";
-
+import Footer from "@components/Footer";
 export default function Home() {
   return (
     <>
@@ -156,7 +156,6 @@ export default function Home() {
         <h2 className="archivo-700 text-5xl">Explore Popular Skills</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 p-10">
-
           <div className="card bg-base-100 image-full w-96 shadow-sm cursor-pointer hover:scale-105 transition-transform duration-300">
             <figure>
               <img src={GuitarLesson} alt="Guitar Lesson" />
@@ -205,15 +204,14 @@ export default function Home() {
       </section>
 
       <section className="flex flex-col justify-center items-center gap-10 mt-10 mb-10">
-        <h2 className="archivo-700 text-5xl">Ready to Start Your SkillSwap Journey?</h2>
-        <button className="btn btn-primary w-1/5 text-lg inter-400">Join the Community</button>
+        <h2 className="archivo-700 text-5xl">
+          Ready to Start Your SkillSwap Journey?
+        </h2>
+        <button className="btn btn-primary w-1/5 text-lg inter-400">
+          Join the Community
+        </button>
       </section>
-
-      <footer className="flex justify-center items-center pt-20 pb-5">
-        <p className="inter-400 text-sm text-[#8C8D8BFF]">
-          &copy; 2025 SkillSwap.
-        </p>
-      </footer>
+      <Footer />
     </>
   );
 }
