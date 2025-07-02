@@ -3,7 +3,7 @@ import type { IUser } from "@interfaces/IUser";
 
 const initialState: IUser = {
   id: "",
-  fullname: "",
+  firstname: "",
   lastname: "",
   email: "",
   picture_url: "",
@@ -16,8 +16,8 @@ export const userSlice = createSlice({
     setId: (state, action) => {
       state.id = action.payload;
     },
-    setFullName: (state, action) => {
-      state.fullname = action.payload;
+    setFirstName: (state, action) => {
+      state.firstname = action.payload;
     },
     setLastName: (state, action) => {
       state.lastname = action.payload;
@@ -31,6 +31,6 @@ export const userSlice = createSlice({
   },
 });
 
-export const { setId, setFullName, setEmail, setLastName, setPictureUrl } =
+export const { setId, setFirstName, setEmail, setLastName, setPictureUrl } =
   userSlice.actions;
 export default userSlice.reducer;
