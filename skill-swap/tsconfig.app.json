@@ -30,7 +30,8 @@
       "@pages/*": ["pages/*"],
       "@assets/*": ["assets/*"],
       "@store/*": ["store/*"],
-      "@interfaces/*": ["interfaces/*"]
+      "@interfaces/*": ["interfaces/*"],
+      "@hooks/*": ["hooks/*"]
     }
   },
   "include": ["src"]

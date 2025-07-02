@@ -6,7 +6,18 @@ import Photography from "@assets/pexels-andre-furtado-43594-1264210.jpg";
 import Cooking from "@assets/pexels-conojeghuo-175753.jpg";
 import LanguageExchange from "@assets/medium-shot-smiley-friends-with-books.jpg";
 import Footer from "@components/Footer";
+import { useNavigate } from "react-router-dom";
+import { useRef } from "react";
 export default function Home() {
+  const navigate = useNavigate();
+  const browseRef = useRef<HTMLHeadingElement>(null);
+
+  const scrollToBrowse = () => {
+    if (browseRef.current) {
+      browseRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <>
       <Navbar />
@@ -26,7 +37,10 @@ export default function Home() {
             sharing your expertise. Discover, connect, and thrive through
             meaningful skill exchanges.
           </p>
-          <button className="btn btn-primary w-32 inter-500">
+          <button
+            className="btn btn-primary w-32 inter-500"
+            onClick={scrollToBrowse}
+          >
             Browse Skills
           </button>
         </div>
@@ -63,7 +77,9 @@ export default function Home() {
                 }}
               />
             </svg>
-            <h3 className="archivo-600 text-2xl">Discover Skills</h3>
+            <h3 ref={browseRef} className="archivo-600 text-2xl">
+              Discover Skills
+            </h3>
             <p className="inter-400 text-lg text-[#8C8D8BFF]">
               Explore a diverse range of skills offered by passionate learners
               and experienced mentors.
@@ -212,7 +228,10 @@ export default function Home() {
         <h2 className="archivo-700 text-5xl text-center">
           Ready to Start Your SkillSwap Journey?
         </h2>
-        <button className="btn btn-primary w-64 lg:w-1/5 text-lg inter-400">
+        <button
+          className="btn btn-primary w-64 lg:w-1/5 text-lg inter-400"
+          onClick={() => navigate("/login")}
+        >
           Join the Community
         </button>
       </section>

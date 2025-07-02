@@ -1,14 +1,31 @@
 import { Route, Routes } from "react-router-dom";
 import Home from "@pages/Home";
 import Login from "@pages/Login";
+import { useSelector } from "react-redux";
+import type { IUser } from "@interfaces/IUser";
 function App() {
+  const user = useSelector((state: { user: IUser }) => state.user);
   return (
     <>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="*" element={<h1 className="text-8xl">?</h1>} />
-      </Routes>
+      {user?.id ? (
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <>
+                Hi {user.firstname} {user.lastname}
+              </>
+            }
+          />
+          <Route path="*" element={<h1 className="text-8xl">?</h1>} />
+        </Routes>
+      ) : (
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="*" element={<h1 className="text-8xl">?</h1>} />
+        </Routes>
+      )}
     </>
   );
 }
