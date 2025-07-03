@@ -181,7 +181,7 @@ export default function Profile() {
                   <td className="inter-400 text-[#8C8D8BFF]">2025-06-15</td>
                   <td className="inter-400 text-[#8C8D8BFF]">
                     <div className="badge badge-soft badge-warning text-xs">
-                      Pending
+                      In Progress
                     </div>
                   </td>
                 </tr>

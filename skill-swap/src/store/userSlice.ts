@@ -7,6 +7,7 @@ const initialState: IUser = {
   lastname: "",
   email: "",
   picture_url: "",
+  isLoaded: false,
 };
 
 export const userSlice = createSlice({
@@ -28,9 +29,18 @@ export const userSlice = createSlice({
     setPictureUrl: (state, action) => {
       state.picture_url = action.payload;
     },
+    setIsLoaded: (state, action) => {
+      state.isLoaded = action.payload;
+    },
   },
 });
 
-export const { setId, setFirstName, setEmail, setLastName, setPictureUrl } =
-  userSlice.actions;
+export const {
+  setId,
+  setFirstName,
+  setEmail,
+  setLastName,
+  setPictureUrl,
+  setIsLoaded,
+} = userSlice.actions;
 export default userSlice.reducer;

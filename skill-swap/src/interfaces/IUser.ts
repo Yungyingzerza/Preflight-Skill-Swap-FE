@@ -4,4 +4,5 @@ export interface IUser {
   lastname: string;
   email: string;
   picture_url: string;
+  isLoaded: boolean;
 }
