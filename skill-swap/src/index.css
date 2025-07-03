@@ -40,6 +40,13 @@
   font-variation-settings: "wdth" 100;
 }
 
+.inter-600 {
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+}
+
 .inter-500 {
   font-family: "Inter", sans-serif;
   font-optical-sizing: auto;
@@ -52,4 +59,18 @@
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
+}
+
+@keyframes loading-text {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.animate-loading-text {
+  background-size: 200% 100%;
+  animation: loading-text 3s infinite linear;
 }

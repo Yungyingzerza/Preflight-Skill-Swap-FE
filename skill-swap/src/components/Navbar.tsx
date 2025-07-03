@@ -1,10 +1,35 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { logout } from "@hooks/useAuth";
+import {
+  setEmail,
+  setFirstName,
+  setId,
+  setLastName,
+  setPictureUrl,
+} from "@store/userSlice";
 import type { IUser } from "@interfaces/IUser";
 
 export default function Navbar() {
   const navigate = useNavigate();
   const user = useSelector((state: { user: IUser }) => state.user);
+
+  const dispatch = useDispatch();
+
+  const handleLogout = async () => {
+    try {
+      dispatch(setId(""));
+      dispatch(setFirstName(""));
+      dispatch(setLastName(""));
+      dispatch(setEmail(""));
+      dispatch(setPictureUrl(""));
+      await logout();
+      navigate("/");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
   return (
     <>
       <div className="navbar bg-base-100 shadow-sm sticky top-0 z-50">
@@ -36,7 +61,7 @@ export default function Navbar() {
                   <a className="justify-between">Profile</a>
                 </li>
                 <li>
-                  <a>Logout</a>
+                  <a onClick={handleLogout}>Logout</a>
                 </li>
               </ul>
             </div>
