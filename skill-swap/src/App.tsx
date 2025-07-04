@@ -34,7 +34,7 @@ function App() {
           dispatch(setIsLoaded(true));
         }
       } catch (error) {
-        if (error == "Error: Unauthorized") {
+        if (error != "AbortError: signal is aborted without reason") {
           dispatch(setIsLoaded(true)); // Set loaded to true even if not authenticated
         }
       }
