@@ -1,7 +1,10 @@
 import { Route, Routes } from "react-router-dom";
 import Home from "@pages/Home";
+import Browse from "@pages/Browse";
+import Messages from "@pages/Messages";
 import Login from "@pages/Login";
 import Profile from "@pages/Profile";
+import RequestPage from "@pages/Request";
 import Loading from "@pages/Loading";
 import { useSelector, useDispatch } from "react-redux";
 import { isAuth } from "@hooks/useAuth";
@@ -53,6 +56,9 @@ function App() {
         user?.id ? (
           <Routes>
             <Route path="/" element={<Profile />} />
+            <Route path="/browse" element={<Browse />} />
+            <Route path="/messages" element={<Messages />} />
+            <Route path="/requests" element={<RequestPage />} />
             <Route path="*" element={<h1 className="text-8xl">?</h1>} />
           </Routes>
         ) : (
