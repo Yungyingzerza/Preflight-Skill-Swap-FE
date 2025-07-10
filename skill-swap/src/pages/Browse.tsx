@@ -3,6 +3,7 @@ import Footer from "@components/Footer";
 import BrowseUser from "@components/BrowseUser";
 import { search, getTargetUserData } from "@hooks/useBrowse";
 import { useCallback, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import type { IUser } from "@interfaces/IUser";
 import type { ISkill } from "@interfaces/ISkill";
 
@@ -34,6 +35,7 @@ interface targetUserData extends IUser {
 }
 
 export default function Browse() {
+  const user = useSelector((state: { user: IUser }) => state.user);
   const [searchInput, setSearchInput] = useState("");
   const [searchResults, setSearchResults] = useState<MergedUserSkills[]>([]);
   const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
@@ -95,7 +97,13 @@ export default function Browse() {
         },
         []
       );
-      setSearchResults(mergedResults);
+
+      //exclude current user from results
+      const filteredResults = mergedResults.filter(
+        (result: MergedUserSkills) => result.user_id !== user.id
+      );
+
+      setSearchResults(filteredResults);
     } catch (error) {
       console.error("Search error:", error);
       // Handle error (e.g., show error message to user)
