@@ -17,6 +17,7 @@ import {
   setLastName,
   setPictureUrl,
   setIsLoaded,
+  setBio,
 } from "@store/userSlice";
 function App() {
   const user = useSelector((state: { user: IUser }) => state.user);
@@ -35,6 +36,7 @@ function App() {
           dispatch(setEmail(response.email));
           dispatch(setPictureUrl(response.picture_url));
           dispatch(setIsLoaded(true));
+          dispatch(setBio(response.bio));
         }
       } catch (error) {
         if (error != "AbortError: signal is aborted without reason") {
