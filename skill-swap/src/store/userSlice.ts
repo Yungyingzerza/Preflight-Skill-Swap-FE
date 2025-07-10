@@ -7,6 +7,7 @@ const initialState: IUser = {
   lastname: "",
   email: "",
   picture_url: "",
+  bio: "",
   isLoaded: false,
 };
 
@@ -32,6 +33,9 @@ export const userSlice = createSlice({
     setIsLoaded: (state, action) => {
       state.isLoaded = action.payload;
     },
+    setBio: (state, action) => {
+      state.bio = action.payload;
+    },
   },
 });
 
@@ -42,5 +46,6 @@ export const {
   setLastName,
   setPictureUrl,
   setIsLoaded,
+  setBio,
 } = userSlice.actions;
 export default userSlice.reducer;
