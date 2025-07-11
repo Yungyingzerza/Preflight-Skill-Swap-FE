@@ -189,6 +189,9 @@ export default function Profile() {
       // Refresh the swap history after completing a swap
       const updatedHistory = await getSwapHistory();
       setSwapHistory(updatedHistory);
+
+      //increment the number of swaps completed
+      setNumberSwapsCompleted((prev) => prev + 1);
     } catch (error) {
       console.error("Failed to complete swap:", error);
     }
