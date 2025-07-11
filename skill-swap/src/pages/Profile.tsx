@@ -10,7 +10,23 @@ import {
   getNumberOfUserSkills,
   editUserSkills,
   editUserSkillsLearn,
+  getSwapHistory,
 } from "@hooks/useMainPage";
+import type { ISkill } from "@interfaces/ISkill";
+
+interface ISwapHistory {
+  offer: {
+    id: string;
+    createdAt: string;
+    Status: {
+      id: string;
+      name: string;
+    };
+  };
+  partnerUser: IUser;
+  partnerSkills: ISkill[];
+}
+
 export default function Profile() {
   const user = useSelector((state: { user: IUser }) => state.user);
   const [MySkillsMode, setMySkillsMode] = useState<"offered" | "learned">(
@@ -28,6 +44,7 @@ export default function Profile() {
 
   const [numberSwapsCompleted, setNumberSwapsCompleted] = useState(0);
 
+  const [swapHistory, setSwapHistory] = useState([]); // State to hold swap history
   useEffect(() => {
     const abortController = new AbortController();
     // Fetch user skills when the component mounts
@@ -72,6 +89,17 @@ export default function Profile() {
         console.error("Failed to fetch number of user skills:", error);
       }
     };
+
+    const fetchSwapHistory = async () => {
+      try {
+        const history = await getSwapHistory(abortController.signal);
+        setSwapHistory(history);
+      } catch (error) {
+        console.error("Failed to fetch swap history:", error);
+      }
+    };
+
+    fetchSwapHistory();
     fetchNumberOfSkills();
     fetchUserSkillsLearned();
     fetchUserSkills();
@@ -355,49 +383,48 @@ export default function Profile() {
                 </tr>
               </thead>
               <tbody>
-                {/* row 1 */}
-                <tr>
-                  <td className="inter-500">Cy Ganderton</td>
-                  <td className="inter-400 text-[#8C8D8BFF]">Advanced SEO</td>
-                  <td className="inter-400 text-[#8C8D8BFF]">2025-03-15</td>
-                  <td className="inter-400 text-[#8C8D8BFF]">
-                    <div className="badge badge-soft badge-success text-xs">
-                      Completed
-                    </div>
-                  </td>
-                </tr>
-                {/* row 2 */}
-                <tr>
-                  <td className="inter-500">Hart Hagerty</td>
-                  <td className="inter-400 text-[#8C8D8BFF]">Video Editing</td>
-                  <td className="inter-400 text-[#8C8D8BFF]">2025-03-16</td>
-                  <td className="inter-400 text-[#8C8D8BFF]">
-                    <div className="badge badge-soft badge-success text-xs">
-                      Completed
-                    </div>
-                  </td>
-                </tr>
-                {/* row 3 */}
-                <tr>
-                  <td className="inter-500">Brice Swyre</td>
-                  <td className="inter-400 text-[#8C8D8BFF]">Photography</td>
-                  <td className="inter-400 text-[#8C8D8BFF]">2025-04-15</td>
-                  <td className="inter-400 text-[#8C8D8BFF]">
-                    <div className="badge badge-soft badge-success text-xs">
-                      Completed
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="inter-500">Alice Bob</td>
-                  <td className="inter-400 text-[#8C8D8BFF]">Network</td>
-                  <td className="inter-400 text-[#8C8D8BFF]">2025-06-15</td>
-                  <td className="inter-400 text-[#8C8D8BFF]">
-                    <div className="badge badge-soft badge-warning text-xs">
-                      In Progress
-                    </div>
-                  </td>
-                </tr>
+                {swapHistory.length > 0 ? (
+                  swapHistory.map((swap: ISwapHistory) => (
+                    <tr key={swap.offer.id}>
+                      <td className="inter-500">
+                        {swap.partnerUser.firstname} {swap.partnerUser.lastname}
+                      </td>
+                      <td className="inter-400 text-[#8C8D8BFF]">
+                        {swap.partnerSkills
+                          .map((skill) => skill.name)
+                          .join(", ")}
+                      </td>
+                      <td className="inter-400 text-[#8C8D8BFF]">
+                        {new Date(swap.offer.createdAt).toLocaleDateString()}
+                      </td>
+                      <td className="inter-400 text-[#8C8D8BFF]">
+                        <div
+                          className={`badge badge-soft ${
+                            swap.offer.Status.name === "completed"
+                              ? "badge-success"
+                              : swap.offer.Status.name === "pending"
+                              ? "badge-warning"
+                              : swap.offer.Status.name === "accepted"
+                              ? "badge-info"
+                              : "badge-error"
+                          } text-xs`}
+                        >
+                          {swap.offer.Status.name.charAt(0).toUpperCase() +
+                            swap.offer.Status.name.slice(1)}
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan={4}
+                      className="text-center inter-400 text-[#8C8D8BFF]"
+                    >
+                      No swap history available.
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

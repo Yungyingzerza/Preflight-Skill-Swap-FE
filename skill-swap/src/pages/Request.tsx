@@ -1,8 +1,86 @@
 import Navbar from "@components/Navbar";
 import Footer from "@components/Footer";
 import RequestUser from "@components/RequestUser";
+import {
+  getPendingOffers,
+  acceptOffer,
+  rejectOffer,
+} from "@hooks/useRequestPage";
+import { useEffect, useState } from "react";
+import type { ISkill } from "@interfaces/ISkill";
+
+interface IPendingOffer {
+  acceptedOffersCount: number;
+  completedOffersCount: number;
+  rejectedOffersCount: number;
+  pendingOffers: {
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    skillsNeeded: {
+      Skill: ISkill;
+    }[];
+    user: {
+      id: string;
+      firstname: string;
+      lastname: string;
+      picture_url: string;
+      UserSkills: {
+        Skill: ISkill;
+      }[];
+    };
+  }[];
+}
 
 export default function RequestPage() {
+  const [pendingOffers, setPendingOffers] = useState<IPendingOffer | null>(
+    null
+  );
+
+  useEffect(() => {
+    const abortController = new AbortController();
+
+    const fetchPendingOffers = async () => {
+      try {
+        const offers = await getPendingOffers(abortController.signal);
+        setPendingOffers(offers);
+      } catch (error) {
+        console.error("Failed to fetch pending offers:", error);
+      }
+    };
+
+    fetchPendingOffers();
+
+    // Cleanup function to avoid memory leaks
+    return () => {
+      abortController.abort();
+    };
+  }, []);
+
+  const handleAccept = async (offerId: string, skillId: string) => {
+    try {
+      await acceptOffer(offerId, skillId);
+
+      //Refresh the pending offers after accepting
+      const updatedOffers = await getPendingOffers();
+      setPendingOffers(updatedOffers);
+    } catch (error) {
+      console.error("Failed to accept offer:", error);
+    }
+  };
+
+  const handleReject = async (offerId: string) => {
+    try {
+      await rejectOffer(offerId);
+
+      //Refresh the pending offers after rejecting
+      const updatedOffers = await getPendingOffers();
+      setPendingOffers(updatedOffers);
+    } catch (error) {
+      console.error("Failed to reject offer:", error);
+    }
+  };
+
   return (
     <>
       <Navbar />
@@ -31,7 +109,9 @@ export default function RequestPage() {
                   />
                 </svg>
               </div>
-              <span className="archivo-700 text-2xl">7</span>
+              <span className="archivo-700 text-2xl">
+                {pendingOffers?.pendingOffers.length || 0}
+              </span>
             </div>
 
             <div className="flex flex-col border border-[#E5E5E5] rounded-lg p-4 gap-5">
@@ -54,7 +134,9 @@ export default function RequestPage() {
                   />
                 </svg>
               </div>
-              <span className="archivo-700 text-2xl">12</span>
+              <span className="archivo-700 text-2xl">
+                {pendingOffers?.acceptedOffersCount || 0}
+              </span>
             </div>
 
             <div className="flex flex-col border border-[#E5E5E5] rounded-lg p-4 gap-5">
@@ -77,7 +159,9 @@ export default function RequestPage() {
                   />
                 </svg>
               </div>
-              <span className="archivo-700 text-2xl">3</span>
+              <span className="archivo-700 text-2xl">
+                {pendingOffers?.rejectedOffersCount || 0}
+              </span>
             </div>
           </div>
 
@@ -86,16 +170,20 @@ export default function RequestPage() {
               Incoming Skill Swap Requests
             </h1>
             <div className="flex flex-row gap-5 flex-wrap justify-center md:justify-start">
-              <RequestUser />
-              <RequestUser />
-              <RequestUser />
-              <RequestUser />
-              <RequestUser />
-              <RequestUser />
-              <RequestUser />
-              <RequestUser />
-              <RequestUser />
-              <RequestUser />
+              {pendingOffers &&
+                pendingOffers.pendingOffers.map((offer) => (
+                  <RequestUser
+                    key={offer.id}
+                    offerId={offer.id}
+                    firstname={offer.user.firstname}
+                    lastname={offer.user.lastname}
+                    picture_url={offer.user.picture_url}
+                    offerSkill={offer.user.UserSkills}
+                    requestSkill={offer.skillsNeeded[0].Skill} // Assuming the first skill is the request
+                    onAccept={handleAccept}
+                    onReject={handleReject}
+                  />
+                ))}
             </div>
           </div>
         </div>
