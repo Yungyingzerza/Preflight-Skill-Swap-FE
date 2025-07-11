@@ -1,7 +1,7 @@
 import Navbar from "@components/Navbar";
 import Footer from "@components/Footer";
 import BrowseUser from "@components/BrowseUser";
-import { search, getTargetUserData } from "@hooks/useBrowse";
+import { search, getTargetUserData, sendRequest } from "@hooks/useBrowse";
 import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import type { IUser } from "@interfaces/IUser";
@@ -42,6 +42,10 @@ export default function Browse() {
   const [targetUserData, setTargetUserData] = useState<targetUserData | null>(
     null
   );
+
+  const [showToast, setShowToast] = useState(false);
+  const [showErrorToast, setShowErrorToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
 
   useEffect(() => {
     if (!selectedUser) return;
@@ -110,9 +114,87 @@ export default function Browse() {
     }
   }, [searchInput]);
 
+  const handleOpenModal = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      (
+        document.getElementById("request-modal") as HTMLDialogElement
+      ).showModal();
+    },
+    [targetUserData]
+  );
+
+  const handleSkillChoose = useCallback(
+    async (skill: ISkill) => {
+      try {
+        if (!targetUserData) {
+          console.error("Target user data is not available.");
+          return;
+        }
+
+        (document.getElementById("request-modal") as HTMLDialogElement).close();
+
+        await sendRequest(targetUserData.id, skill.id);
+        setToastMessage("Request sent successfully!");
+        setShowToast(true);
+        setShowErrorToast(false);
+      } catch (error) {
+        if (error instanceof Error) {
+          setToastMessage(error.message);
+        }
+        setShowErrorToast(true);
+        setShowToast(true);
+        return;
+      }
+    },
+    [targetUserData]
+  );
+
   return (
     <>
       <Navbar />
+
+      {showToast && (
+        <>
+          {showErrorToast ? (
+            <div className="toast transition-opacity duration-300">
+              <div className="alert alert-error">
+                <span>{toastMessage}</span>
+              </div>
+            </div>
+          ) : (
+            <div className="toast transition-opacity duration-300">
+              <div className="alert alert-success">
+                <span>{toastMessage}</span>
+              </div>
+            </div>
+          )}
+        </>
+      )}
+
+      <dialog id="request-modal" className="modal">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">Choose a Skill to Request</h3>
+          <div className="py-4 flex flex-row flex-wrap justify-center">
+            {/* list all target user skill from UserSkill */}
+            {targetUserData?.UserSkills.map((skill) => (
+              <button
+                key={skill.skill_id}
+                className="btn btn-outline btn-primary m-2"
+                onClick={() => handleSkillChoose(skill.Skill)}
+              >
+                {skill.Skill.name}
+              </button>
+            ))}
+          </div>
+          <div className="modal-action">
+            <form method="dialog">
+              {/* if there is a button in form, it will close the modal */}
+              <button className="btn">Close</button>
+            </form>
+          </div>
+        </div>
+      </dialog>
       <div className="flex flex-col gap-7 w-full md:p-10">
         <section className="flex flex-col items-center justify-center">
           <h1 className="archivo-800 text-4xl">
@@ -308,7 +390,10 @@ export default function Browse() {
                     <p>{targetUserData.bio || "No description provided."}</p>
                   </div>
 
-                  <button className="btn btn-primary rounded-t-none">
+                  <button
+                    className="btn btn-primary rounded-t-none"
+                    onClick={handleOpenModal}
+                  >
                     Request Swap
                   </button>
                 </>
