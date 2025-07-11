@@ -1,17 +1,215 @@
 import Navbar from "@components/Navbar";
 import Footer from "@components/Footer";
 import ConversationUser from "@components/ConversationUser";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
+import {
+  getAllConversations,
+  getAllConversationMessages,
+  sendMessage,
+} from "@hooks/useChat";
+import { useSelector } from "react-redux";
+import type { IUser } from "@interfaces/IUser";
+import io, { Socket } from "socket.io-client";
+
+interface IConversation {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  Participants: {
+    id: string;
+    conversation_id: string;
+    user_id: string;
+    createdAt: string;
+    updatedAt: string;
+  }[];
+  participants: {
+    User: {
+      id: string;
+      firstname: string;
+      lastname: string;
+      picture_url: string;
+    };
+  }[];
+  lastMessage: {
+    message?: string | null;
+    createdAt?: string | null;
+  } | null;
+}
+
+interface IMessage {
+  id: string;
+  message: string;
+  is_read: boolean;
+  createdAt: string;
+  sender_id: string;
+  User: {
+    id: string;
+    firstname: string;
+    lastname: string;
+    picture_url: string;
+  };
+}
 
 export default function Messages() {
+  const user = useSelector((state: { user: IUser }) => state.user);
+
+  const [socket, setSocket] = useState<Socket | null>(null);
+
   const chatRef = useRef<HTMLDivElement>(null);
+
+  const [conversations, setConversations] = useState<IConversation[]>([]);
+  const [selectedConversation, setSelectedConversation] =
+    useState<IConversation | null>(null);
+
+  const [currentParticipant, setCurrentParticipant] = useState<IUser | null>(
+    null
+  );
+
+  const [messageContent, setMessageContent] = useState("");
+
+  const [messages, setMessages] = useState<IMessage[]>([]);
 
   useEffect(() => {
     // Scroll to the bottom of the chat when the component mounts or updates
     if (chatRef.current) {
       chatRef.current.scrollTop = chatRef.current.scrollHeight;
     }
-  }, [chatRef.current]);
+  }, [chatRef.current, messages]);
+
+  useEffect(() => {
+    if (selectedConversation) {
+      const participant = selectedConversation.participants.find(
+        (p) => p.User.id !== user.id
+      );
+      if (participant) {
+        setCurrentParticipant(participant.User);
+      }
+
+      const abortController = new AbortController();
+
+      async function fetchMessages() {
+        try {
+          const { messages } = await getAllConversationMessages(
+            selectedConversation!.id,
+            abortController.signal
+          );
+          setMessages(messages);
+          // Handle messages as needed, e.g., set them in state
+        } catch (error) {
+          console.error("Failed to fetch conversation messages:", error);
+        }
+      }
+
+      fetchMessages();
+
+      // Cleanup function to avoid memory leaks
+      return () => {
+        abortController.abort();
+      };
+    }
+  }, [selectedConversation]);
+
+  useEffect(() => {
+    const abortController = new AbortController();
+    const fetchConversations = async () => {
+      try {
+        const { conversations } = await getAllConversations(
+          abortController.signal
+        );
+        setConversations(conversations);
+      } catch (error) {
+        console.error("Failed to fetch conversations:", error);
+      }
+    };
+    fetchConversations();
+
+    // Cleanup function to avoid memory leaks
+    return () => {
+      abortController.abort();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (user.id) {
+      const socket = io(import.meta.env.VITE_BASE_WS_URL, {
+        query: {
+          id: user.id,
+        },
+      });
+
+      setSocket(socket);
+
+      //join
+      socket.emit("join", { id: user.id });
+
+      return () => {
+        socket.close();
+      };
+    } else {
+      if (socket) {
+        setSocket(null);
+        socket.close();
+      }
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (socket) {
+      const abortController = new AbortController();
+
+      socket.on("receive_message", async () => {
+        console.log("receive_message event triggered");
+
+        const { conversations } = await getAllConversations(
+          abortController.signal
+        );
+        setConversations(conversations);
+
+        if (selectedConversation) {
+          const { messages } = await getAllConversationMessages(
+            selectedConversation.id,
+            abortController.signal
+          );
+          setMessages(messages);
+        }
+      });
+
+      return () => {
+        socket.off("receive_message");
+        abortController.abort();
+      };
+    }
+  }, [socket, selectedConversation]);
+
+  const handleSendMessage = useCallback(async () => {
+    if (selectedConversation && messageContent.trim()) {
+      try {
+        await sendMessage(selectedConversation.id, messageContent);
+        setMessageContent(""); // Clear the input after sending
+
+        //fetch the latest messages after sending
+        const { messages } = await getAllConversationMessages(
+          selectedConversation.id
+        );
+        setMessages(messages);
+
+        //send lastMessage of the conversation to update the lastMessage in the conversation list
+        const updatedConversation = {
+          ...selectedConversation,
+          lastMessage: {
+            message: messageContent,
+          },
+        };
+        setConversations((prev) =>
+          prev.map((conv) =>
+            conv.id === updatedConversation.id ? updatedConversation : conv
+          )
+        );
+      } catch (error) {
+        console.error("Failed to send message:", error);
+      }
+    }
+  }, [selectedConversation, messageContent]);
 
   return (
     <>
@@ -37,166 +235,117 @@ export default function Messages() {
               <span className="text-lg md:text-xl archivo-700">Messages</span>
             </div>
             <div className="flex flex-col gap-5 overflow-y-auto h-full">
-              <ConversationUser />
-              <ConversationUser />
-              <ConversationUser />
-              <ConversationUser />
-              <ConversationUser />
-              <ConversationUser />
+              {/* check lenght first then show user that not currently user */}
+              {conversations.length > 0 ? (
+                conversations.map((conversation) => {
+                  const participant = conversation.participants.find(
+                    (p) => p.User.id !== user.id
+                  );
+                  return (
+                    <ConversationUser
+                      key={conversation.id}
+                      firstname={participant?.User.firstname || "Unknown"}
+                      lastname={participant?.User.lastname || ""}
+                      picture_url={participant?.User.picture_url || ""}
+                      lastMessage={
+                        conversation.lastMessage?.message || "No messages yet"
+                      }
+                      onClick={() => setSelectedConversation(conversation)}
+                    />
+                  );
+                })
+              ) : (
+                <span className="text-gray-500">No conversations found</span>
+              )}
             </div>
-
-            <div className="flex-1"></div>
-            <button className="btn btn-primary ">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="size-6 hidden md:block "
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z"
-                />
-              </svg>
-
-              <span className="inter-500 text-xs md:text-sm ">
-                New Conversation
-              </span>
-            </button>
           </div>
 
           <div className="flex flex-col w-full ">
-            <div className="flex flex-row gap-2 border-b border-[#E5E5E5] p-4 items-center w-full">
-              <div className="avatar">
-                <div className="w-14 rounded-full">
-                  <img src="https://img.daisyui.com/images/profile/demo/yellingcat@192.webp" />
-                </div>
-              </div>
-              <span className="archivo-700 text-lg">Yelling Cat</span>
-            </div>
-
-            <div
-              ref={chatRef}
-              className="w-full h-full flex flex-col gap-4 p-5 overflow-y-auto"
-            >
-              <div className="chat chat-start">
-                <div className="chat-image avatar">
-                  <div className="w-10 rounded-full">
-                    <img
-                      alt="Tailwind CSS chat bubble component"
-                      src="https://img.daisyui.com/images/profile/demo/kenobee@192.webp"
-                    />
+            {selectedConversation && currentParticipant ? (
+              <>
+                {/* show not current user */}
+                <div className="flex flex-row gap-2 border-b border-[#E5E5E5] p-4 items-center w-full">
+                  <div className="avatar">
+                    <div className="w-14 rounded-full">
+                      <img
+                        src={currentParticipant.picture_url}
+                        alt={`${currentParticipant.firstname} ${currentParticipant.lastname}`}
+                      />
+                    </div>
                   </div>
+                  <span className="archivo-700 text-lg">
+                    {currentParticipant.firstname} {currentParticipant.lastname}
+                  </span>
                 </div>
-                <div className="chat-header">Obi-Wan Kenobi</div>
-                <div className="chat-bubble">You were the Chosen One!</div>
-                <div className="chat-footer opacity-50">
-                  <time className="text-xs opacity-50">12:45</time>
-                </div>
-              </div>
-              <div className="chat chat-end">
-                <div className="chat-image avatar">
-                  <div className="w-10 rounded-full">
-                    <img
-                      alt="Tailwind CSS chat bubble component"
-                      src="https://img.daisyui.com/images/profile/demo/anakeen@192.webp"
-                    />
-                  </div>
-                </div>
-                <div className="chat-header">Anakin</div>
-                <div className="chat-bubble">I hate you!</div>
-                <div className="chat-footer opacity-50">
-                  <time className="text-xs opacity-50">12:46</time>
-                </div>
-              </div>
-              <div className="chat chat-start">
-                <div className="chat-image avatar">
-                  <div className="w-10 rounded-full">
-                    <img
-                      alt="Tailwind CSS chat bubble component"
-                      src="https://img.daisyui.com/images/profile/demo/kenobee@192.webp"
-                    />
-                  </div>
-                </div>
-                <div className="chat-header">Obi-Wan Kenobi</div>
-                <div className="chat-bubble">You were the Chosen One!</div>
-                <div className="chat-footer opacity-50">
-                  <time className="text-xs opacity-50">12:45</time>
-                </div>
-              </div>
-              <div className="chat chat-end">
-                <div className="chat-image avatar">
-                  <div className="w-10 rounded-full">
-                    <img
-                      alt="Tailwind CSS chat bubble component"
-                      src="https://img.daisyui.com/images/profile/demo/anakeen@192.webp"
-                    />
-                  </div>
-                </div>
-                <div className="chat-header">Anakin</div>
-                <div className="chat-bubble">I hate you!</div>
-                <div className="chat-footer opacity-50">
-                  <time className="text-xs opacity-50">12:46</time>
-                </div>
-              </div>
-              <div className="chat chat-end">
-                <div className="chat-image avatar">
-                  <div className="w-10 rounded-full">
-                    <img
-                      alt="Tailwind CSS chat bubble component"
-                      src="https://img.daisyui.com/images/profile/demo/anakeen@192.webp"
-                    />
-                  </div>
-                </div>
-                <div className="chat-header">Anakin</div>
-                <div className="chat-bubble">I hate you!</div>
-                <div className="chat-footer opacity-50">
-                  <time className="text-xs opacity-50">12:46</time>
-                </div>
-              </div>
-              <div className="chat chat-end">
-                <div className="chat-image avatar">
-                  <div className="w-10 rounded-full">
-                    <img
-                      alt="Tailwind CSS chat bubble component"
-                      src="https://img.daisyui.com/images/profile/demo/anakeen@192.webp"
-                    />
-                  </div>
-                </div>
-                <div className="chat-header">Anakin</div>
-                <div className="chat-bubble">I hate you!</div>
-                <div className="chat-footer opacity-50">
-                  <time className="text-xs opacity-50">12:46</time>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex flex-row gap-2 p-2 items-center w-full border-t border-[#E5E5E5]">
-              <input
-                type="text"
-                placeholder="Type your message..."
-                className="input flex-1 rounded-3xl"
-              />
-              <button className="btn btn-primary">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1}
-                  stroke="currentColor"
-                  className="size-6"
+                <div
+                  ref={chatRef}
+                  className="w-full h-full flex flex-col gap-4 p-5 overflow-y-auto"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"
+                  {messages.map((message) => (
+                    <div
+                      key={message.id}
+                      className={`chat ${
+                        message.sender_id === user.id
+                          ? "chat-end"
+                          : "chat-start"
+                      }`}
+                    >
+                      <div className="chat-image avatar">
+                        <div className="w-10 rounded-full">
+                          <img
+                            src={message.User.picture_url}
+                            alt={`${message.User.firstname} ${message.User.lastname}`}
+                          />
+                        </div>
+                      </div>
+                      <div className="chat-header">
+                        {message.User.firstname} {message.User.lastname}
+                      </div>
+                      <div className="chat-bubble">{message.message}</div>
+                      <div className="chat-footer opacity-50">
+                        <time className="text-xs opacity-50">
+                          {new Date(message.createdAt).toLocaleTimeString()}
+                        </time>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex flex-row gap-2 p-2 items-center w-full border-t border-[#E5E5E5]">
+                  <input
+                    type="text"
+                    placeholder="Type your message..."
+                    className="input flex-1 rounded-3xl"
+                    value={messageContent}
+                    onChange={(e) => setMessageContent(e.target.value)}
                   />
-                </svg>
-              </button>
-            </div>
+                  <button
+                    className="btn btn-primary"
+                    onClick={handleSendMessage}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1}
+                      stroke="currentColor"
+                      className="size-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="flex items-center justify-center h-full">
+                <span className="text-gray-500">
+                  Select a conversation to start chatting
+                </span>
+              </div>
+            )}
           </div>
         </div>
       </div>

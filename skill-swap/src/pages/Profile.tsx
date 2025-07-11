@@ -12,6 +12,7 @@ import {
   editUserSkillsLearn,
   getSwapHistory,
 } from "@hooks/useMainPage";
+import { completeOffer } from "@hooks/useRequestPage";
 import type { ISkill } from "@interfaces/ISkill";
 
 interface ISwapHistory {
@@ -24,7 +25,9 @@ interface ISwapHistory {
     };
   };
   partnerUser: IUser;
-  partnerSkills: ISkill[];
+  partnerSkills: {
+    Skill: ISkill;
+  }[];
 }
 
 export default function Profile() {
@@ -178,6 +181,18 @@ export default function Profile() {
     },
     [MySkillsMode, userSkills, userSkillsLearned] // Dependencies to ensure the latest state is used
   ); // Placeholder for close modal logic
+
+  const handleCompleteSwap = async (offerId: string) => {
+    try {
+      await completeOffer(offerId);
+
+      // Refresh the swap history after completing a swap
+      const updatedHistory = await getSwapHistory();
+      setSwapHistory(updatedHistory);
+    } catch (error) {
+      console.error("Failed to complete swap:", error);
+    }
+  };
 
   return (
     <>
@@ -380,6 +395,7 @@ export default function Profile() {
                   <th>Skill Exchanged</th>
                   <th>Date</th>
                   <th>Status</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -391,7 +407,7 @@ export default function Profile() {
                       </td>
                       <td className="inter-400 text-[#8C8D8BFF]">
                         {swap.partnerSkills
-                          .map((skill) => skill.name)
+                          .map((skill) => skill.Skill.name)
                           .join(", ")}
                       </td>
                       <td className="inter-400 text-[#8C8D8BFF]">
@@ -412,6 +428,17 @@ export default function Profile() {
                           {swap.offer.Status.name.charAt(0).toUpperCase() +
                             swap.offer.Status.name.slice(1)}
                         </div>
+                      </td>
+                      <td>
+                        {/* show completed button if status is accepted */}
+                        {swap.offer.Status.name === "accepted" && (
+                          <button
+                            className="btn btn-primary btn-sm"
+                            onClick={() => handleCompleteSwap(swap.offer.id)}
+                          >
+                            Mark as Completed
+                          </button>
+                        )}
                       </td>
                     </tr>
                   ))
