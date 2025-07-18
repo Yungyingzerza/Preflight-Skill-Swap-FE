@@ -79,7 +79,7 @@ describe("Browse Skills Feature", () => {
       body: { message: "Request sent successfully!" },
     }).as("sendSwapRequest");
 
-    cy.visit("/browse");
+    cy.visit("/browse", { timeout: 1000 });
   });
 
   it("DEBUG: should test search API intercept", () => {

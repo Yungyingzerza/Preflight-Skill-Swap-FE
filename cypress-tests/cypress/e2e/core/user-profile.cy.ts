@@ -86,7 +86,7 @@ describe("User Profile Feature", () => {
       ],
     }).as("getAllSkills");
 
-    cy.visit("/");
+    cy.visit("/", { timeout: 1000 });
 
     // Set the real authentication cookie with exact properties from JSON
     cy.setCookie(

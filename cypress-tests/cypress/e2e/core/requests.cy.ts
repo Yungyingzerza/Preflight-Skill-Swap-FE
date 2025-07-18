@@ -53,7 +53,7 @@ describe("Skill Swap Requests Feature", () => {
       });
     }).as("rejectOffer");
 
-    cy.visit("/requests");
+    cy.visit("/requests", { timeout: 1000 });
   });
 
   it("should display requests page correctly", () => {

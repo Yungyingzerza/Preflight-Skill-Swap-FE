@@ -14,7 +14,8 @@
     "test": "cypress run",
     "test:headed": "cypress run --headed",
     "test:auth": "cypress run --spec 'cypress/e2e/auth/**/*'",
-    "test:core": "cypress run --spec 'cypress/e2e/core/**/*'"
+    "test:core": "cypress run --spec 'cypress/e2e/core/**/*'",
+    "test:core:video": "cypress run --spec 'cypress/e2e/core/**/*' --headed "
   },
   "devDependencies": {
     "@cypress/code-coverage": "^3.14.5",

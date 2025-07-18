@@ -58,7 +58,7 @@ describe("Messaging Feature", () => {
       });
     }).as("sendMessage");
 
-    cy.visit("/messages");
+    cy.visit("/messages", { timeout: 1000 });
   });
 
   it("should display messages page correctly", () => {
