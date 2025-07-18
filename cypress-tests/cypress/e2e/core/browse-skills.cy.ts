@@ -48,9 +48,29 @@ describe("Browse Skills Feature", () => {
     }).as("searchSkills");
 
     // Mock get target user data API
-    cy.intercept("POST", "**/browse/get-target-user-data", {
-      fixture: "skills",
-      property: "targetUserData",
+    cy.intercept("POST", "**/browse/get-target-user-data", (req) => {
+      if (fixtureData && fixtureData.targetUserData) {
+        const responseData = fixtureData.targetUserData;
+
+        req.reply({
+          statusCode: 200,
+          body: responseData,
+        });
+      } else {
+        req.reply({
+          statusCode: 200,
+          body: {
+            id: "user-2",
+            firstname: "Alice",
+            lastname: "Smith",
+            email: "alice@example.com",
+            picture_url: "https://example.com/alice.jpg",
+            bio: "Experienced developer who loves sharing knowledge.",
+            UserSkills: [],
+            UserSkillLearns: [],
+          },
+        });
+      }
     }).as("getTargetUserData");
 
     // Mock request swap API
