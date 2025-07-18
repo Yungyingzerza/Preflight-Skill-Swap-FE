@@ -6,26 +6,14 @@ This test suite provides comprehensive end-to-end testing for all aspects of the
 
 ### 📊 Test Statistics
 
-- **Total Test Files**: 6
-- **Test Categories**: 4 (Smoke, Auth, Core, API)
-- **Estimated Test Cases**: 80+
+- **Total Test Files**: 5
+- **Test Categories**: 2 (Auth, Core)
+- **Estimated Test Cases**: 60+
 - **Coverage Areas**: 100% of user flows
 
 ### 🔍 Detailed Test Breakdown
 
-#### 1. Smoke Tests (1 file)
-
-**File**: `cypress/e2e/smoke/basic-functionality.cy.ts`
-
-- ✅ Application loading and rendering
-- ✅ Navigation functionality
-- ✅ Responsive design validation
-- ✅ Asset loading verification
-- ✅ Performance checks
-- ✅ Console error detection
-- ✅ Browser compatibility
-
-#### 2. Authentication Tests (1 file)
+#### 1. Authentication Tests (1 file)
 
 **File**: `cypress/e2e/auth/authentication.cy.ts`
 
@@ -37,7 +25,7 @@ This test suite provides comprehensive end-to-end testing for all aspects of the
 - ✅ Logout functionality
 - ✅ Authentication state persistence
 
-#### 3. Core Feature Tests (4 files)
+#### 2. Core Feature Tests (4 files)
 
 **File**: `cypress/e2e/core/browse-skills.cy.ts`
 
@@ -87,19 +75,6 @@ This test suite provides comprehensive end-to-end testing for all aspects of the
 - ✅ Responsive dashboard layout
 - ✅ Modal interactions (open/close/select)
 
-#### 4. API Integration Tests (1 file)
-
-**File**: `cypress/e2e/api/api-integration.cy.ts`
-
-- ✅ Authentication endpoints
-- ✅ User management APIs
-- ✅ Skills search APIs
-- ✅ Messaging APIs
-- ✅ Request handling APIs
-- ✅ Error response handling
-- ✅ Rate limiting tests
-- ✅ CORS validation
-
 ### 🛠 Custom Commands Created
 
 Located in `cypress/support/commands.ts`:
@@ -146,10 +121,8 @@ bun run cypress:open
 bun test
 
 # Run specific test suites
-bun run test:smoke
 bun run test:auth
 bun run test:core
-bun run test:api
 
 # Run with specific browser
 bun run cypress:run:chrome
@@ -180,17 +153,16 @@ bun run test:headed
 
 ### 📈 Test Execution Strategy
 
-1. **Smoke Tests First**: Verify basic functionality
-2. **Authentication**: Ensure auth flows work
-3. **Core Features**: Test main application features
-4. **API Integration**: Validate backend communication
+1. **Authentication**: Ensure auth flows work first
+2. **Core Features**: Test main application features
+3. **Component Integration**: Validate React component interactions
 
 ### 🔄 CI/CD Ready
 
-- GitHub Actions workflow example provided
+- GitHub Actions workflow ready
 - Parallel execution support
-- Test recording capability
-- Artifact generation for debugging
+- Local test recording capability
+- No external uploads required
 
 ### 📋 Coverage Checklist
 
@@ -232,7 +204,6 @@ bun run test:headed
 2. **Start testing**: `bun run cypress:open`
 3. **Use actual CSS classes** as implemented (no need for data-testid attributes)
 4. **API endpoints are properly configured** to match actual implementation
-5. **Set up CI/CD** using the provided GitHub Actions example
 
 ### 🔧 Recent Improvements
 
