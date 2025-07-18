@@ -64,6 +64,14 @@ export default function RequestPage() {
       //Refresh the pending offers after accepting
       const updatedOffers = await getPendingOffers();
       setPendingOffers(updatedOffers);
+
+      //close the modal after accepting
+      const modal = document.getElementById(
+        "accept-modal"
+      ) as HTMLDialogElement;
+      if (modal) {
+        modal.close();
+      }
     } catch (error) {
       console.error("Failed to accept offer:", error);
     }

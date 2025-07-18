@@ -1,0 +1,123 @@
+{
+  "skills": [
+    {
+      "id": "1",
+      "name": "JavaScript",
+      "description": "Modern JavaScript programming",
+      "picture_url": "https://example.com/js.jpg"
+    },
+    {
+      "id": "2",
+      "name": "React",
+      "description": "React framework development",
+      "picture_url": "https://example.com/react.jpg"
+    },
+    {
+      "id": "3",
+      "name": "Python",
+      "description": "Python programming language",
+      "picture_url": "https://example.com/python.jpg"
+    },
+    {
+      "id": "4",
+      "name": "Guitar",
+      "description": "Playing acoustic and electric guitar",
+      "picture_url": "https://example.com/guitar.jpg"
+    },
+    {
+      "id": "5",
+      "name": "Photography",
+      "description": "Digital photography and editing",
+      "picture_url": "https://example.com/photo.jpg"
+    }
+  ],
+  "searchTerms": [
+    "JavaScript",
+    "Programming",
+    "Music",
+    "Art",
+    "Photography",
+    "Cooking",
+    "Language"
+  ],
+  "browseSearchResults": [
+    {
+      "id": "user-skill-1",
+      "user_id": "user-2",
+      "skill_id": "1",
+      "createdAt": "2024-01-01T00:00:00Z",
+      "updatedAt": "2024-01-01T00:00:00Z",
+      "User": {
+        "id": "user-2",
+        "firstname": "Alice",
+        "lastname": "Smith",
+        "picture_url": "https://example.com/alice.jpg"
+      },
+      "Skill": {
+        "id": "1",
+        "name": "JavaScript",
+        "description": "Modern JavaScript programming"
+      }
+    },
+    {
+      "id": "user-skill-2",
+      "user_id": "user-2",
+      "skill_id": "2",
+      "createdAt": "2024-01-01T00:00:00Z",
+      "updatedAt": "2024-01-01T00:00:00Z",
+      "User": {
+        "id": "user-2",
+        "firstname": "Alice",
+        "lastname": "Smith",
+        "picture_url": "https://example.com/alice.jpg"
+      },
+      "Skill": {
+        "id": "2",
+        "name": "React",
+        "description": "React framework development"
+      }
+    },
+    {
+      "id": "user-skill-3",
+      "user_id": "user-3",
+      "skill_id": "3",
+      "createdAt": "2024-01-01T00:00:00Z",
+      "updatedAt": "2024-01-01T00:00:00Z",
+      "User": {
+        "id": "user-3",
+        "firstname": "Bob",
+        "lastname": "Johnson",
+        "picture_url": "https://example.com/bob.jpg"
+      },
+      "Skill": {
+        "id": "3",
+        "name": "Python",
+        "description": "Python programming language"
+      }
+    }
+  ],
+  "targetUserData": {
+    "id": "user-2",
+    "firstname": "Alice",
+    "lastname": "Smith",
+    "email": "alice@example.com",
+    "picture_url": "https://example.com/alice.jpg",
+    "bio": "Experienced developer who loves sharing knowledge.",
+    "UserSkills": [
+      {
+        "skill_id": "1",
+        "Skill": { "id": "1", "name": "JavaScript" }
+      },
+      {
+        "skill_id": "2",
+        "Skill": { "id": "2", "name": "React" }
+      }
+    ],
+    "UserSkillLearns": [
+      {
+        "skill_id": "4",
+        "Skill": { "id": "4", "name": "Photography" }
+      }
+    ]
+  }
+}
