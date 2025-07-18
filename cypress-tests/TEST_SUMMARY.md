@@ -50,12 +50,17 @@ This test suite provides comprehensive end-to-end testing for all aspects of the
 
 **File**: `cypress/e2e/core/messaging.cy.ts`
 
-- ✅ Conversation list display
-- ✅ Message sending/receiving
+- ✅ Messages page layout and navigation
+- ✅ Conversation list with ConversationUser components
+- ✅ Message sending via button click and Enter key
+- ✅ DaisyUI chat component structure validation
+- ✅ Message history with proper timestamps
+- ✅ Conversation selection and participant info
+- ✅ WebSocket connection simulation
+- ✅ Empty conversation state handling
 - ✅ Real-time message updates
-- ✅ Message history
-- ✅ Conversation selection
-- ✅ WebSocket simulation
+- ✅ Message input validation (empty messages)
+- ✅ Auto-scroll to latest messages
 
 **File**: `cypress/e2e/core/user-profile.cy.ts`
 
@@ -68,12 +73,19 @@ This test suite provides comprehensive end-to-end testing for all aspects of the
 
 **File**: `cypress/e2e/core/requests.cy.ts`
 
-- ✅ Pending requests display
-- ✅ Request acceptance/rejection
-- ✅ Request statistics
-- ✅ Request filtering
-- ✅ Request completion workflow
-- ✅ Error handling
+- ✅ Request Dashboard with statistics display
+- ✅ Incoming skill swap requests list
+- ✅ RequestUser component interactions
+- ✅ Accept modal with skill selection workflow
+- ✅ Request rejection functionality
+- ✅ Statistics cards (pending, accepted, rejected)
+- ✅ Skill badge display (offered vs requested)
+- ✅ User avatar and information display
+- ✅ Empty requests state handling
+- ✅ API error handling for accept/reject
+- ✅ Data refresh after actions
+- ✅ Responsive dashboard layout
+- ✅ Modal interactions (open/close/select)
 
 #### 4. API Integration Tests (1 file)
 
@@ -106,7 +118,8 @@ Located in `cypress/fixtures/`:
 
 - `users.json` - Test user data
 - `skills.json` - Sample skills and search terms
-- `messages.json` - Sample conversations and messages
+- `messages.json` - Conversation and message data with proper structure
+- `requests.json` - Pending offers and user skill data
 
 ### ⚙ Configuration Features
 
@@ -114,8 +127,10 @@ Located in `cypress/fixtures/`:
 - **TypeScript Support**: Full type safety
 - **Code Coverage**: Integrated with @cypress/code-coverage
 - **Multiple Browsers**: Chrome, Firefox, Edge support
-- **Custom Selectors**: data-testid attributes recommended
-- **API Mocking**: Comprehensive intercept patterns
+- **Component-Specific Selectors**: Precise CSS class targeting
+- **API Mocking**: Real endpoint patterns from useChat.ts, useRequestPage.ts
+- **Redux Store Testing**: Proper authentication state management
+- **Modal Interactions**: DaisyUI modal component testing
 - **Real-time Testing**: WebSocket simulation
 
 ### 🚀 Quick Start Commands
@@ -153,6 +168,9 @@ bun run test:headed
 - **State Management**: Redux Toolkit
 - **Routing**: React Router
 - **UI Library**: Tailwind CSS + DaisyUI
+- **Authentication**: Cookie-based with /auth/isauth endpoint
+- **Chat API**: /chat/ endpoints for conversations and messaging
+- **Request API**: /request/ endpoints for skill swap offers
 
 #### Backend API (Optional for API tests)
 
@@ -212,9 +230,27 @@ bun run test:headed
 
 1. **Run the frontend application**: `cd ../skill-swap && bun run dev`
 2. **Start testing**: `bun run cypress:open`
-3. **Add data-testid attributes** to components for more reliable selectors
-4. **Customize API URLs** in cypress.config.ts if needed
+3. **Use actual CSS classes** as implemented (no need for data-testid attributes)
+4. **API endpoints are properly configured** to match actual implementation
 5. **Set up CI/CD** using the provided GitHub Actions example
+
+### 🔧 Recent Improvements
+
+#### Messaging Tests Enhanced
+
+- Updated to use actual API endpoints (`/chat/`, `/chat/*/`, `/chat/send`)
+- Proper authentication with `/auth/isauth` and Redux store population
+- Component-specific CSS selectors matching Messages.tsx and ConversationUser.tsx
+- DaisyUI chat component structure validation
+- Realistic fixture data matching actual interfaces
+
+#### Requests Tests Enhanced
+
+- Updated to use actual API endpoints (`/request/pending-offers`, `/request/accept-offer/`, `/request/reject-offer/`)
+- RequestUser component modal interactions properly tested
+- Statistics dashboard validation with proper CSS selectors
+- Skill badge differentiation (offered vs requested)
+- Comprehensive fixture data matching IPendingOffer interface
 
 ---
 

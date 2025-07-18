@@ -13,10 +13,8 @@
     "cypress:run:record": "cypress run --record",
     "test": "cypress run",
     "test:headed": "cypress run --headed",
-    "test:smoke": "cypress run --spec 'cypress/e2e/smoke/**/*'",
     "test:auth": "cypress run --spec 'cypress/e2e/auth/**/*'",
-    "test:core": "cypress run --spec 'cypress/e2e/core/**/*'",
-    "test:api": "cypress run --spec 'cypress/e2e/api/**/*'"
+    "test:core": "cypress run --spec 'cypress/e2e/core/**/*'"
   },
   "devDependencies": {
     "@cypress/code-coverage": "^3.14.5",
