@@ -66,7 +66,9 @@ describe("Messaging Feature", () => {
     cy.wait("@getConversations");
 
     // Should have the Messages header
-    cy.get(".text-lg.md\\:text-xl.archivo-700").should("be.visible").and("contain.text", "Messages");
+    cy.get(".text-lg.md\\:text-xl.archivo-700")
+      .should("be.visible")
+      .and("contain.text", "Messages");
 
     // Should have conversations sidebar
     cy.get(".flex.flex-col.w-32.md\\:w-72").should("be.visible");

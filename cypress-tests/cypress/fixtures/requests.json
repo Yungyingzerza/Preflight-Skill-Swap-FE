@@ -1,0 +1,87 @@
+{
+  "pendingOffers": {
+    "acceptedOffersCount": 3,
+    "completedOffersCount": 7,
+    "rejectedOffersCount": 2,
+    "pendingOffers": [
+      {
+        "id": "offer-1",
+        "createdAt": "2025-01-15T10:30:00Z",
+        "updatedAt": "2025-01-15T10:30:00Z",
+        "skillsNeeded": [
+          {
+            "Skill": {
+              "id": "skill-js-1",
+              "name": "JavaScript",
+              "description": "Frontend programming language"
+            }
+          }
+        ],
+        "user": {
+          "id": "user-alice-1",
+          "firstname": "Alice",
+          "lastname": "Johnson",
+          "picture_url": "https://example.com/alice.jpg",
+          "UserSkills": [
+            {
+              "Skill": {
+                "id": "skill-python-1",
+                "name": "Python",
+                "description": "Backend programming language"
+              }
+            },
+            {
+              "Skill": {
+                "id": "skill-react-1",
+                "name": "React",
+                "description": "Frontend framework"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "offer-2",
+        "createdAt": "2025-01-14T16:20:00Z",
+        "updatedAt": "2025-01-14T16:20:00Z",
+        "skillsNeeded": [
+          {
+            "Skill": {
+              "id": "skill-design-1",
+              "name": "UI/UX Design",
+              "description": "User interface and experience design"
+            }
+          }
+        ],
+        "user": {
+          "id": "user-bob-2",
+          "firstname": "Bob",
+          "lastname": "Wilson",
+          "picture_url": "https://example.com/bob.jpg",
+          "UserSkills": [
+            {
+              "Skill": {
+                "id": "skill-node-1",
+                "name": "Node.js",
+                "description": "JavaScript runtime for backend"
+              }
+            },
+            {
+              "Skill": {
+                "id": "skill-docker-1",
+                "name": "Docker",
+                "description": "Containerization platform"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "emptyPendingOffers": {
+    "acceptedOffersCount": 0,
+    "completedOffersCount": 0,
+    "rejectedOffersCount": 0,
+    "pendingOffers": []
+  }
+}
