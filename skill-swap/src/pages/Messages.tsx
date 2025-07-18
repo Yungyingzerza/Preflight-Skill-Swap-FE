@@ -317,6 +317,12 @@ export default function Messages() {
                     className="input flex-1 rounded-3xl"
                     value={messageContent}
                     onChange={(e) => setMessageContent(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        handleSendMessage();
+                      }
+                    }}
                   />
                   <button
                     className="btn btn-primary"

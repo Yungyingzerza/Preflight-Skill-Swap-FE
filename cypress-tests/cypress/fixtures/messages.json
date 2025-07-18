@@ -1,11 +1,29 @@
 {
   "conversations": [
     {
-      "id": "1",
+      "id": "conv-1",
+      "createdAt": "2025-01-15T09:00:00Z",
+      "updatedAt": "2025-01-15T10:05:00Z",
+      "Participants": [
+        {
+          "id": "part-1",
+          "conversation_id": "conv-1",
+          "user_id": "user-test-1",
+          "createdAt": "2025-01-15T09:00:00Z",
+          "updatedAt": "2025-01-15T09:00:00Z"
+        },
+        {
+          "id": "part-2",
+          "conversation_id": "conv-1",
+          "user_id": "user-alice-1",
+          "createdAt": "2025-01-15T09:00:00Z",
+          "updatedAt": "2025-01-15T09:00:00Z"
+        }
+      ],
       "participants": [
         {
           "User": {
-            "id": "1",
+            "id": "user-alice-1",
             "firstname": "Alice",
             "lastname": "Johnson",
             "picture_url": "https://example.com/alice.jpg"
@@ -14,43 +32,84 @@
       ],
       "lastMessage": {
         "message": "Hi! I'm interested in your JavaScript skills.",
-        "createdAt": "2025-01-15T10:00:00Z"
+        "createdAt": "2025-01-15T10:05:00Z"
+      }
+    },
+    {
+      "id": "conv-2",
+      "createdAt": "2025-01-14T15:30:00Z",
+      "updatedAt": "2025-01-14T16:20:00Z",
+      "Participants": [
+        {
+          "id": "part-3",
+          "conversation_id": "conv-2",
+          "user_id": "user-test-1",
+          "createdAt": "2025-01-14T15:30:00Z",
+          "updatedAt": "2025-01-14T15:30:00Z"
+        },
+        {
+          "id": "part-4",
+          "conversation_id": "conv-2",
+          "user_id": "user-bob-2",
+          "createdAt": "2025-01-14T15:30:00Z",
+          "updatedAt": "2025-01-14T15:30:00Z"
+        }
+      ],
+      "participants": [
+        {
+          "User": {
+            "id": "user-bob-2",
+            "firstname": "Bob",
+            "lastname": "Wilson",
+            "picture_url": "https://example.com/bob.jpg"
+          }
+        }
+      ],
+      "lastMessage": {
+        "message": "Thanks for the great Python session!",
+        "createdAt": "2025-01-14T16:20:00Z"
       }
     }
   ],
   "messages": [
     {
-      "id": "1",
+      "id": "msg-1",
       "message": "Hello! How are you?",
       "is_read": false,
       "createdAt": "2025-01-15T10:00:00Z",
-      "sender_id": "1",
+      "sender_id": "user-alice-1",
       "User": {
-        "id": "1",
+        "id": "user-alice-1",
         "firstname": "Alice",
         "lastname": "Johnson",
         "picture_url": "https://example.com/alice.jpg"
       }
     },
     {
-      "id": "2",
-      "message": "I'm doing great! Would you like to swap skills?",
+      "id": "msg-2",
+      "message": "I'm doing great! Would you like to swap JavaScript skills?",
+      "is_read": true,
+      "createdAt": "2025-01-15T10:02:00Z",
+      "sender_id": "user-test-1",
+      "User": {
+        "id": "user-test-1",
+        "firstname": "John",
+        "lastname": "Doe",
+        "picture_url": "https://example.com/john.jpg"
+      }
+    },
+    {
+      "id": "msg-3",
+      "message": "Hi! I'm interested in your JavaScript skills.",
       "is_read": true,
       "createdAt": "2025-01-15T10:05:00Z",
-      "sender_id": "2",
+      "sender_id": "user-alice-1",
       "User": {
-        "id": "2",
-        "firstname": "Bob",
-        "lastname": "Wilson",
-        "picture_url": "https://example.com/bob.jpg"
+        "id": "user-alice-1",
+        "firstname": "Alice",
+        "lastname": "Johnson",
+        "picture_url": "https://example.com/alice.jpg"
       }
     }
-  ],
-  "sampleMessages": [
-    "Hello! I'm interested in learning from you.",
-    "Would you like to swap skills?",
-    "When would be a good time to meet?",
-    "Thanks for the great session!",
-    "Looking forward to our next exchange."
   ]
 }
