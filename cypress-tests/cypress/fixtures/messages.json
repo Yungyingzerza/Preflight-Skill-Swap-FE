@@ -1,0 +1,56 @@
+{
+  "conversations": [
+    {
+      "id": "1",
+      "participants": [
+        {
+          "User": {
+            "id": "1",
+            "firstname": "Alice",
+            "lastname": "Johnson",
+            "picture_url": "https://example.com/alice.jpg"
+          }
+        }
+      ],
+      "lastMessage": {
+        "message": "Hi! I'm interested in your JavaScript skills.",
+        "createdAt": "2025-01-15T10:00:00Z"
+      }
+    }
+  ],
+  "messages": [
+    {
+      "id": "1",
+      "message": "Hello! How are you?",
+      "is_read": false,
+      "createdAt": "2025-01-15T10:00:00Z",
+      "sender_id": "1",
+      "User": {
+        "id": "1",
+        "firstname": "Alice",
+        "lastname": "Johnson",
+        "picture_url": "https://example.com/alice.jpg"
+      }
+    },
+    {
+      "id": "2",
+      "message": "I'm doing great! Would you like to swap skills?",
+      "is_read": true,
+      "createdAt": "2025-01-15T10:05:00Z",
+      "sender_id": "2",
+      "User": {
+        "id": "2",
+        "firstname": "Bob",
+        "lastname": "Wilson",
+        "picture_url": "https://example.com/bob.jpg"
+      }
+    }
+  ],
+  "sampleMessages": [
+    "Hello! I'm interested in learning from you.",
+    "Would you like to swap skills?",
+    "When would be a good time to meet?",
+    "Thanks for the great session!",
+    "Looking forward to our next exchange."
+  ]
+}

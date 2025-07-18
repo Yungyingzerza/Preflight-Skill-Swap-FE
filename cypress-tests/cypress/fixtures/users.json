@@ -1,0 +1,34 @@
+{
+  "validUser": {
+    "firstname": "John",
+    "lastname": "Doe",
+    "email": "test@example.com",
+    "password": "TestPassword123"
+  },
+  "anotherUser": {
+    "firstname": "Jane",
+    "lastname": "Smith",
+    "email": "jane.smith@example.com",
+    "password": "password456"
+  },
+  "invalidUser": {
+    "email": "invalid@email.com",
+    "password": "wrongpassword"
+  },
+  "testUsers": [
+    {
+      "id": "1",
+      "firstname": "Alice",
+      "lastname": "Johnson",
+      "email": "alice@example.com",
+      "picture_url": "https://example.com/alice.jpg"
+    },
+    {
+      "id": "2",
+      "firstname": "Bob",
+      "lastname": "Wilson",
+      "email": "bob@example.com",
+      "picture_url": "https://example.com/bob.jpg"
+    }
+  ]
+}
