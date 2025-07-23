@@ -2,23 +2,22 @@ async function editUserProfile(
   firstname: string,
   lastname: string,
   bio: string,
-  picture: File,
+  picture: string,
   abortController: AbortSignal | null = null
 ) {
-  //form data to send
-  const formData = new FormData();
-  formData.append("firstname", firstname);
-  formData.append("lastname", lastname);
-  formData.append("bio", bio);
-  if (picture) {
-    formData.append("picture", picture);
-  }
-
   const response = await fetch(
     `${import.meta.env.VITE_BASE_API}/main/edit-profile`,
     {
       method: "POST",
-      body: formData,
+      body: JSON.stringify({
+        firstname,
+        lastname,
+        bio,
+        picture_url: picture,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
       credentials: "include", // Include cookies in the request
       signal: abortController, // Pass the abort signal if provided
     }
