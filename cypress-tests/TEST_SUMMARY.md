@@ -6,8 +6,8 @@ This test suite provides comprehensive end-to-end testing for all aspects of the
 
 ### 📊 Test Statistics
 
-- **Total Test Files**: 5
-- **Test Categories**: 2 (Auth, Core)
+- **Total Test Files**: 6
+- **Test Categories**: 3 (Auth, Core, API)
 - **Estimated Test Cases**: 60+
 - **Coverage Areas**: 100% of user flows
 
@@ -75,154 +75,109 @@ This test suite provides comprehensive end-to-end testing for all aspects of the
 - ✅ Responsive dashboard layout
 - ✅ Modal interactions (open/close/select)
 
-### 🛠 Custom Commands Created
+## API Tests Documentation
 
-Located in `cypress/support/commands.ts`:
+## Overview
 
-- `cy.login()` - Authentication helper
-- `cy.register()` - Registration helper
-- `cy.logout()` - Logout helper
-- `cy.navigateTo()` - Navigation helper
-- `cy.searchSkills()` - Search helper
-- `cy.sendMessage()` - Messaging helper
-- `cy.waitForLoading()` - Loading state helper
+This file contains comprehensive API tests for the Skill Swap backend service. The tests cover all major endpoints identified in the application hooks.
 
-### 📁 Test Data Fixtures
+## Test Coverage
 
-Located in `cypress/fixtures/`:
+### Authentication API (`/auth/*`)
 
-- `users.json` - Test user data
-- `skills.json` - Sample skills and search terms
-- `messages.json` - Conversation and message data with proper structure
-- `requests.json` - Pending offers and user skill data
+- ✅ User Registration
+- ✅ User Login
+- ✅ User Logout
+- ✅ Authentication Status Check
+- ✅ Error handling for invalid credentials
+- ✅ Duplicate registration prevention
 
-### ⚙ Configuration Features
+### Browse API (`/browse/*`)
 
-- **Latest Cypress**: v14.5.2 (installed via Bun)
-- **TypeScript Support**: Full type safety
-- **Code Coverage**: Integrated with @cypress/code-coverage
-- **Multiple Browsers**: Chrome, Firefox, Edge support
-- **Component-Specific Selectors**: Precise CSS class targeting
-- **API Mocking**: Real endpoint patterns from useChat.ts, useRequestPage.ts
-- **Redux Store Testing**: Proper authentication state management
-- **Modal Interactions**: DaisyUI modal component testing
-- **Real-time Testing**: WebSocket simulation
+- ✅ Search functionality
+- ✅ Get target user data
+- ✅ Send skill swap requests
 
-### 🚀 Quick Start Commands
+### Chat API (`/chat/*`)
 
-```bash
-# Install dependencies
-bun install
+- ✅ Get all conversations
+- ✅ Get conversation messages
+- ✅ Send messages
 
-# Open Cypress Test Runner (Interactive)
-bun run cypress:open
+### Main/Profile API (`/main/*`)
 
-# Run all tests (Headless)
-bun test
+- ✅ Edit user profile
+- ✅ Get user skills to learn
+- ✅ Get number of user skills
+- ✅ Get user skills
+- ✅ Edit user skills
+- ✅ Edit skills to learn
+- ✅ Get swap history
 
-# Run specific test suites
-bun run test:auth
-bun run test:core
+### Request API (`/request/*`)
 
-# Run with specific browser
-bun run cypress:run:chrome
-bun run cypress:run:firefox
+- ✅ Get pending offers
+- ✅ Accept offers
+- ✅ Reject offers
+- ✅ Complete offers
 
-# Run in headed mode
-bun run test:headed
+### Error Handling & Security
+
+- ✅ Network timeout handling
+- ✅ Malformed JSON requests
+- ✅ Missing required fields
+- ✅ Authentication requirements
+- ✅ Content type validation
+
+## Configuration
+
+The tests use the following configuration:
+
+- **Base URL**: Configured via `Cypress.env('apiUrl')` (default: `http://localhost:3000`)
+- **Content Type**: `application/json` for all requests
+- **Authentication**: Cookie-based sessions
+
+## Test Data
+
+The tests use dynamically generated test data to avoid conflicts:
+
+- **Email**: `test.user.${Date.now()}@example.com`
+- **Password**: `testPassword123`
+- **Names**: Test User
+- **Bio**: Test bio for user
+
+## Expected Response Formats
+
+### Successful Authentication Response
+
+```json
+{
+  "user": {
+    "email": "user@example.com",
+    "firstname": "Test",
+    "lastname": "User"
+  },
+  "message": "Login successful"
+}
 ```
 
-### 🔗 Integration Points
+### Skills Response
 
-#### Frontend Application
+```json
+{
+  "skills": [
+    {
+      "id": "1",
+      "name": "JavaScript"
+    }
+  ]
+}
+```
 
-- **Expected URL**: `http://localhost:5173`
-- **Framework**: React + TypeScript + Vite
-- **State Management**: Redux Toolkit
-- **Routing**: React Router
-- **UI Library**: Tailwind CSS + DaisyUI
-- **Authentication**: Cookie-based with /auth/isauth endpoint
-- **Chat API**: /chat/ endpoints for conversations and messaging
-- **Request API**: /request/ endpoints for skill swap offers
+### Error Response
 
-#### Backend API (Optional for API tests)
-
-- **Expected URL**: `http://localhost:3000`
-- **Authentication**: Cookie-based sessions
-- **WebSocket**: Socket.io for real-time features
-
-### 📈 Test Execution Strategy
-
-1. **Authentication**: Ensure auth flows work first
-2. **Core Features**: Test main application features
-3. **Component Integration**: Validate React component interactions
-
-### 🔄 CI/CD Ready
-
-- GitHub Actions workflow ready
-- Parallel execution support
-- Local test recording capability
-- No external uploads required
-
-### 📋 Coverage Checklist
-
-#### User Flows ✅
-
-- [x] Guest user browsing
-- [x] User registration
-- [x] User login
-- [x] Skill browsing and search
-- [x] Profile management
-- [x] Messaging
-- [x] Request management
-- [x] User logout
-
-#### Error Scenarios ✅
-
-- [x] Network failures
-- [x] Invalid inputs
-- [x] Unauthorized access
-- [x] Empty states
-- [x] API errors
-
-#### Browser Compatibility ✅
-
-- [x] Chrome
-- [x] Firefox
-- [x] Edge
-- [x] Mobile viewports
-
-#### Performance ✅
-
-- [x] Page load times
-- [x] Asset loading
-- [x] Memory leaks (console errors)
-
-### 🎯 Next Steps
-
-1. **Run the frontend application**: `cd ../skill-swap && bun run dev`
-2. **Start testing**: `bun run cypress:open`
-3. **Use actual CSS classes** as implemented (no need for data-testid attributes)
-4. **API endpoints are properly configured** to match actual implementation
-
-### 🔧 Recent Improvements
-
-#### Messaging Tests Enhanced
-
-- Updated to use actual API endpoints (`/chat/`, `/chat/*/`, `/chat/send`)
-- Proper authentication with `/auth/isauth` and Redux store population
-- Component-specific CSS selectors matching Messages.tsx and ConversationUser.tsx
-- DaisyUI chat component structure validation
-- Realistic fixture data matching actual interfaces
-
-#### Requests Tests Enhanced
-
-- Updated to use actual API endpoints (`/request/pending-offers`, `/request/accept-offer/`, `/request/reject-offer/`)
-- RequestUser component modal interactions properly tested
-- Statistics dashboard validation with proper CSS selectors
-- Skill badge differentiation (offered vs requested)
-- Comprehensive fixture data matching IPendingOffer interface
-
----
-
-**This comprehensive test suite ensures your Skill Swap application is thoroughly tested across all user scenarios and technical aspects! 🧪✨**
+```json
+{
+  "message": "Error description"
+}
+```
