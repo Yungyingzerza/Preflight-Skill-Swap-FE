@@ -1,6 +1,6 @@
 import Navbar from "@components/Navbar";
 import Footer from "@components/Footer";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import type { IUser } from "@interfaces/IUser";
 import type { IUserSkill } from "@interfaces/IUserSkill";
 import { useEffect, useState, useCallback } from "react";
@@ -11,7 +11,14 @@ import {
   editUserSkills,
   editUserSkillsLearn,
   getSwapHistory,
+  editUserProfile,
 } from "@hooks/useMainPage";
+import {
+  setBio,
+  setFirstName,
+  setLastName,
+  setPictureUrl,
+} from "@store/userSlice";
 import { completeOffer } from "@hooks/useRequestPage";
 import type { ISkill } from "@interfaces/ISkill";
 
@@ -32,6 +39,7 @@ interface ISwapHistory {
 
 export default function Profile() {
   const user = useSelector((state: { user: IUser }) => state.user);
+  const dispatch = useDispatch();
   const [MySkillsMode, setMySkillsMode] = useState<"offered" | "learned">(
     "offered"
   );
@@ -48,6 +56,19 @@ export default function Profile() {
   const [numberSwapsCompleted, setNumberSwapsCompleted] = useState(0);
 
   const [swapHistory, setSwapHistory] = useState([]); // State to hold swap history
+  const [tempInputUser, setTempInputUser] = useState<IUser>({
+    id: user.id,
+    firstname: user.firstname,
+    lastname: user.lastname,
+    email: user.email,
+    picture_url: user.picture_url,
+    isLoaded: user.isLoaded,
+    bio: user.bio,
+  });
+  const [tempProfileImageFile, setTempProfileImageFile] = useState<File | null>(
+    null
+  );
+
   useEffect(() => {
     const abortController = new AbortController();
     // Fetch user skills when the component mounts
@@ -197,6 +218,92 @@ export default function Profile() {
     }
   };
 
+  const handleOpenProfileModal = useCallback(() => {
+    setTempInputUser(user);
+    setTempProfileImageFile(null);
+    (document.getElementById("profile-modal") as HTMLDialogElement).showModal();
+  }, [user]);
+
+  const handleUploadProfileImage = useCallback(
+    async (file: File) => {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch(`${import.meta.env.VITE_BASE_API}/upload`, {
+        method: "POST",
+        body: formData,
+        credentials: "include", // Include cookies in the request
+      });
+      if (!res.ok) {
+        throw new Error("Failed to upload profile image");
+      }
+      const data = await res.json();
+      return data.filePath; // Return the updated picture URL
+    },
+    [user.id]
+  );
+
+  const handleSaveProfile = useCallback(
+    async (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+
+      //if have tempProfileImageFile, upload it
+      if (tempProfileImageFile) {
+        try {
+          const pictureUrl = await handleUploadProfileImage(
+            tempProfileImageFile
+          );
+          setTempInputUser((prev) => ({
+            ...prev,
+            picture_url: pictureUrl,
+          }));
+
+          const data = await editUserProfile(
+            tempInputUser.firstname,
+            tempInputUser.lastname,
+            tempInputUser.bio || "",
+            pictureUrl
+          );
+
+          if (!data) {
+            // console.error("Failed to update profile");
+            return;
+          }
+
+          dispatch(setFirstName(data.firstname));
+          dispatch(setLastName(data.lastname));
+          dispatch(setBio(data.bio || ""));
+          dispatch(setPictureUrl(data.picture_url));
+        } catch (error) {
+          return;
+        }
+      } else {
+        setTempInputUser((prev) => ({
+          ...prev,
+          picture_url: user.picture_url,
+        }));
+
+        const data = await editUserProfile(
+          tempInputUser.firstname,
+          tempInputUser.lastname,
+          tempInputUser.bio || "",
+          tempInputUser.picture_url
+        );
+
+        if (!data) {
+          // console.error("Failed to update profile");
+          return;
+        }
+
+        dispatch(setFirstName(data.firstname));
+        dispatch(setLastName(data.lastname));
+        dispatch(setBio(data.bio || ""));
+        dispatch(setPictureUrl(data.picture_url));
+      }
+
+      (document.getElementById("profile-modal") as HTMLDialogElement).close();
+    },
+    [tempInputUser, tempProfileImageFile]
+  );
   return (
     <>
       <Navbar />
@@ -246,6 +353,79 @@ export default function Profile() {
           </div>
         </div>
       </dialog>
+      <dialog id="profile-modal" className="modal">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">Edit Profile</h3>
+          <div className="py-4 flex flex-col gap-4">
+            <figure
+              className="avatar cursor-pointer"
+              onClick={() => {
+                const fileInput = document.createElement("input");
+                fileInput.type = "file";
+                fileInput.accept = "image/*";
+                fileInput.onchange = (e) => {
+                  const file = (e.target as HTMLInputElement).files?.[0];
+                  if (file) {
+                    setTempProfileImageFile(file);
+                  }
+                };
+                fileInput.click();
+              }}
+            >
+              <div className="w-24 rounded-full">
+                {tempProfileImageFile ? (
+                  <img src={URL.createObjectURL(tempProfileImageFile)} />
+                ) : (
+                  <img src={user.picture_url} />
+                )}
+              </div>
+            </figure>
+            <input
+              type="text"
+              placeholder="First Name"
+              className="input input-bordered w-full"
+              value={tempInputUser?.firstname}
+              onChange={(e) =>
+                setTempInputUser((prev) => ({
+                  ...prev,
+                  firstname: e.target.value,
+                }))
+              }
+            />
+            <input
+              type="text"
+              placeholder="Last Name"
+              className="input input-bordered w-full"
+              value={tempInputUser?.lastname}
+              onChange={(e) =>
+                setTempInputUser((prev) => ({
+                  ...prev,
+                  lastname: e.target.value,
+                }))
+              }
+            />
+            <textarea
+              className="textarea textarea-bordered w-full"
+              placeholder="Bio"
+              value={tempInputUser?.bio || ""}
+              onChange={(e) =>
+                setTempInputUser((prev) => ({
+                  ...prev,
+                  bio: e.target.value,
+                }))
+              }
+            ></textarea>
+          </div>
+          <div className="modal-action">
+            <form method="dialog">
+              {/* if there is a button in form, it will close the modal */}
+              <button className="btn btn-primary" onClick={handleSaveProfile}>
+                Save
+              </button>
+            </form>
+          </div>
+        </div>
+      </dialog>
       <div className="flex flex-col gap-7 w-full md:p-10">
         <section className="flex flex-row w-full p-10 shadow-md rounded-md gap-5 border border-[#E5E5E5] flex-wrap">
           <div>
@@ -282,7 +462,10 @@ export default function Profile() {
             </div>
           </div>
           <div className="md:w-40 w-full">
-            <button className="btn inter-500 text-sm flex flex-row gap-2 justify-center items-center w-full">
+            <button
+              className="btn inter-500 text-sm flex flex-row gap-2 justify-center items-center w-full"
+              onClick={handleOpenProfileModal}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"

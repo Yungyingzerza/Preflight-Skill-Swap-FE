@@ -17,6 +17,9 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Copy .env to build folder
+        run: cp /home/github-runner/actions-runner/frontend.env $BUILD_DIR/.env
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
