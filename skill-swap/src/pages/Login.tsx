@@ -20,12 +20,34 @@ export default function Login() {
   const [lastname, setLastname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleRegister = async () => {
     try {
+      //validate firstname and lastname
+      if (!firstname || !lastname) {
+        setErrorMessage("Firstname and lastname are required.");
+        return;
+      }
+
+      //validate email format
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(email)) {
+        setErrorMessage("Please enter a valid email address.");
+        return;
+      }
+
+      //validate password strength
+      if (password.length < 8) {
+        setErrorMessage("Password must be at least 8 characters long.");
+        return;
+      }
+
+      setErrorMessage("");
+
       const response = await register(firstname, lastname, email, password);
 
       if (response) {
@@ -44,12 +66,33 @@ export default function Login() {
 
       navigate("/");
     } catch (error) {
-      console.error("Registration failed:", error);
+      if (error instanceof Error) setErrorMessage(error.message);
     }
   };
 
   const handleLogin = async () => {
     try {
+      //validate email and password
+      if (!email || !password) {
+        setErrorMessage("Email and password are required.");
+        return;
+      }
+
+      //validate email format
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(email)) {
+        setErrorMessage("Please enter a valid email address.");
+        return;
+      }
+
+      //validate password strength
+      if (password.length < 8) {
+        setErrorMessage("Password must be at least 8 characters long.");
+        return;
+      }
+
+      setErrorMessage("");
+
       const response = await login(email, password);
 
       if (response) {
@@ -66,7 +109,7 @@ export default function Login() {
 
       navigate("/");
     } catch (error) {
-      console.error("Login failed:", error);
+      if (error instanceof Error) setErrorMessage(error.message);
     }
   };
 
@@ -85,6 +128,11 @@ export default function Login() {
                   Join SkillSwap to connect with others and share your skills.
                 </span>
               </div>
+              {errorMessage && (
+                <div className="alert alert-error">
+                  <span>{errorMessage}</span>
+                </div>
+              )}
               <div className="w-full">
                 <fieldset className="fieldset w-full">
                   <legend className="fieldset-legend">Firstname</legend>
@@ -221,18 +269,14 @@ export default function Login() {
                       required
                       minLength={8}
                       placeholder="•••••••••"
-                      pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-                      title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
+                      pattern="(.{8,})"
+                      title="Must be at least 8 characters"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                     />
                   </label>
                   <p className="validator-hint hidden">
-                    Must be more than 8 characters, including
-                    <br />
-                    At least one number <br />
-                    At least one lowercase letter <br />
-                    At least one uppercase letter
+                    Must be at least 8 characters
                   </p>
                 </fieldset>
               </div>
@@ -277,6 +321,11 @@ export default function Login() {
                   Access your account and start exchanging skills.
                 </span>
               </div>
+              {errorMessage && (
+                <div className="alert alert-error">
+                  <span>{errorMessage}</span>
+                </div>
+              )}
               <div className="w-full">
                 <fieldset className="fieldset w-full">
                   <legend className="fieldset-legend">Email</legend>
@@ -343,18 +392,14 @@ export default function Login() {
                       required
                       minLength={8}
                       placeholder="•••••••••"
-                      pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-                      title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
+                      pattern=".{8,}"
+                      title="Must be at least 8 characters"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                     />
                   </label>
                   <p className="validator-hint hidden">
-                    Must be more than 8 characters, including
-                    <br />
-                    At least one number <br />
-                    At least one lowercase letter <br />
-                    At least one uppercase letter
+                    Must be at least 8 characters
                   </p>
                 </fieldset>
               </div>
@@ -382,7 +427,10 @@ export default function Login() {
                   Don't have an account?{" "}
                   <span
                     className="text-primary cursor-pointer"
-                    onClick={() => setIsRegisterPage(true)}
+                    onClick={() => {
+                      setErrorMessage("");
+                      setIsRegisterPage(true);
+                    }}
                   >
                     Create One
                   </span>

@@ -19,7 +19,7 @@ async function register(
   );
 
   if (!response.ok) {
-    throw new Error("Registration failed");
+    throw new Error((await response.json()).message || "Registration failed");
   }
 
   return await response.json();
@@ -41,7 +41,7 @@ async function login(
   });
 
   if (!response.ok) {
-    throw new Error("Login failed");
+    throw new Error((await response.json()).message || "Login failed");
   }
 
   return await response.json();
