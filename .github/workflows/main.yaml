@@ -1,0 +1,36 @@
+name: Build & Deploy Frontend to Kubernetes
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-push-deploy:
+    runs-on: self-hosted
+
+    env:
+      IMAGE_NAME: localhost:5000/skillswap-frontend:latest
+      BUILD_DIR: ./skill-swap
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ env.BUILD_DIR }}
+          push: true
+          tags: ${{ env.IMAGE_NAME }}
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: "latest"
+
+      - name: Rollout Restart Frontend Deployment
+        run: kubectl rollout restart deployment skillswap-frontend
