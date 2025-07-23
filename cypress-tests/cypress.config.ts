@@ -1,5 +1,5 @@
 import { defineConfig } from "cypress";
-import codeCoverageTask from "@cypress/code-coverage/task";
+// import codeCoverageTask from "@cypress/code-coverage/task";
 
 export default defineConfig({
   e2e: {
@@ -11,7 +11,7 @@ export default defineConfig({
     experimentalStudio: true,
     setupNodeEvents(on, config) {
       // implement node event listeners here
-      codeCoverageTask(on, config);
+      // codeCoverageTask(on, config); // Disabled to prevent frontend dependency
       return config;
     },
     specPattern: "cypress/e2e/**/*.cy.{js,jsx,ts,tsx}",
@@ -19,7 +19,7 @@ export default defineConfig({
     env: {
       // Add environment variables here
       apiUrl: "http://localhost:3000",
-      coverage: true,
+      // coverage: true, // Disabled to prevent frontend dependency
     },
     excludeSpecPattern: [
       "cypress/e2e/examples/*",
