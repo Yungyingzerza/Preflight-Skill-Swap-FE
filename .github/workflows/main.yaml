@@ -26,6 +26,7 @@ jobs:
           context: ${{ env.BUILD_DIR }}
           push: true
           tags: ${{ env.IMAGE_NAME }}
+          builder: default
 
       - name: Set up kubectl
         uses: azure/setup-kubectl@v3
