@@ -21,35 +21,18 @@ jobs:
       - name: Copy .env to build folder
         run: cp /home/github-runner/actions-runner/frontend.env $BUILD_DIR/.env
 
-      - name: Set up Buildx Builder for Local
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-        with:
-          name: localbuilder
-          buildkitd-flags: --debug
-          install: true
 
-      - name: Build and Push to Local Registry
+      - name: Build and Push to Both Registries
         uses: docker/build-push-action@v5
         with:
           context: ${{ env.BUILD_DIR }}
           push: true
-          tags: ${{ env.IMAGE_NAME }}
-
-      - name: Set up Buildx Builder for Public
-        uses: docker/setup-buildx-action@v3
-        with:
-          name: publicbuilder
-          install: true
-
-      - name: Use Public Builder
-        run: docker buildx use publicbuilder
-
-      - name: Build and Push to Public Registry
-        uses: docker/build-push-action@v5
-        with:
-          context: ${{ env.BUILD_DIR }}
-          push: true
-          tags: ${{ env.PUBLIC_IMAGE_NAME }}
+          tags: |
+            ${{ env.IMAGE_NAME }}
+            ${{ env.PUBLIC_IMAGE_NAME }}
+          builder: default
 
       - name: Set up kubectl
         uses: azure/setup-kubectl@v3
