@@ -30,7 +30,7 @@ export default function Home() {
 
         <div className="text-center mt-4 absolute flex flex-col justify-center items-center gap-5">
           <h1 className="archivo-800 text-4xl sm:text-5xl md:text-6xl">
-            UUnlock Your Potential. Share Your Skills. Connect & Grow.
+            Unlock Your Potential. Share Your Skills. Connect & Grow.
           </h1>
           <p className="archivo-400 text-[#8C8D8BFF] text-lg sm:text-xl md:text-2xl">
             SkillSwap is your vibrant community for learning new talents and
