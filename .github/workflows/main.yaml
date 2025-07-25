@@ -39,7 +39,6 @@ jobs:
           push: true
           tags: ${{ env.PUBLIC_IMAGE_NAME }}
           builder: default
-          platforms: linux/amd64,linux/arm64
 
       - name: Set up kubectl
         uses: azure/setup-kubectl@v3
