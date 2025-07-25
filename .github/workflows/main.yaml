@@ -30,8 +30,8 @@ jobs:
           context: ${{ env.BUILD_DIR }}
           push: true
           tags: |
-            localhost:5000/skillswap-frontend:latest
-            registry.yungying.com/preflight-frontend:latest
+            ${{ env.IMAGE_NAME }}
+            ${{ env.PUBLIC_IMAGE_NAME }}
           builder: default
 
       - name: Set up kubectl
