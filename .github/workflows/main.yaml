@@ -15,14 +15,14 @@ jobs:
       BUILD_DIR: ./skill-swap
 
     steps:
-      # - name: Discord notification (start)
-      #   env:
-      #     DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-      #     DISCORD_USERNAME: github_server
-      #     DISCORD_AVATAR: https://picsum.photos/id/237/200/300
-      #   uses: Ilshidur/action-discord@master
-      #   with:
-      #     args: "The project {{ EVENT_PAYLOAD.repository.full_name }} has started GitHub Action."
+      - name: Discord notification (start)
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_USERNAME: github_server
+          DISCORD_AVATAR: https://picsum.photos/id/237/200/300
+        uses: Ilshidur/action-discord@master
+        with:
+          args: "The project {{ EVENT_PAYLOAD.repository.full_name }} has started GitHub Action."
 
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -58,18 +58,25 @@ jobs:
       - name: Rollout Restart Frontend Deployment
         run: kubectl rollout restart deployment skillswap-frontend
 
-      # - name: Invoke deployment hook
-      #   uses: distributhor/workflow-webhook@v3
-      #   with:
-      #     webhook_url: https://fs-webhook.iecmu.com/hooks/redeploy
-      #     webhook_secret: ${{ secrets.WEBHOOK_SECRET }}
-      #     data: '{ "project_group": "${{ vars.PROJECT_GROUP}}", "discord_webhook": "${{ secrets.DISCORD_WEBHOOK}}", "webhook_secret": "${{ secrets.WEBHOOK_SECRET }}" }'
+      - name: Invoke deployment hook
+        uses: distributhor/workflow-webhook@v3
+        with:
+          webhook_url: https://fs-webhook.iecmu.com/hooks/redeploy
+          webhook_secret: ${{ secrets.WEBHOOK_SECRET }}
+          data: >
+            {
+              "data": {
+                "project_group": "${{ vars.PROJECT_GROUP }}",
+                "discord_webhook": "${{ secrets.DISCORD_WEBHOOK }}",
+                "webhook_secret": "${{ secrets.WEBHOOK_SECRET }}"
+              }
+            }
 
-      # - name: Discord notification (finish)
-      #   env:
-      #     DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-      #     DISCORD_USERNAME: github_server
-      #     DISCORD_AVATAR: https://picsum.photos/id/237/200/300
-      #   uses: Ilshidur/action-discord@master
-      #   with:
-      #     args: "The project {{ EVENT_PAYLOAD.repository.full_name }} has finished GitHub Action."
+      - name: Discord notification (finish)
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_USERNAME: github_server
+          DISCORD_AVATAR: https://picsum.photos/id/237/200/300
+        uses: Ilshidur/action-discord@master
+        with:
+          args: "The project {{ EVENT_PAYLOAD.repository.full_name }} has finished GitHub Action."
