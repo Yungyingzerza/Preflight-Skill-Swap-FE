@@ -33,19 +33,10 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and Push to Local Registry
-        uses: docker/build-push-action@v5
-        with:
-          context: ${{ env.BUILD_DIR }}
-          load: true
-          tags: ${{ env.IMAGE_NAME }}
-          builder: default
-
       - name: Build and Push to Public Registry
         uses: docker/build-push-action@v5
         with:
           context: ${{ env.BUILD_DIR }}
-          no-cache: true
           push: true
           tags: ${{ env.PUBLIC_IMAGE_NAME }}
           builder: default
@@ -63,14 +54,7 @@ jobs:
         with:
           webhook_url: https://fs-webhook.iecmu.com/hooks/redeploy
           webhook_secret: ${{ secrets.WEBHOOK_SECRET }}
-          data: >
-            {
-              "data": {
-                "project_group": "${{ vars.PROJECT_GROUP }}",
-                "discord_webhook": "${{ secrets.DISCORD_WEBHOOK }}",
-                "webhook_secret": "${{ secrets.WEBHOOK_SECRET }}"
-              }
-            }
+          data: '{ "project_group": "${{ vars.PROJECT_GROUP}}", "discord_webhook": "${{ secrets.DISCORD_WEBHOOK}}", "webhook_secret": "${{ secrets.WEBHOOK_SECRET }}" }'
 
       - name: Discord notification (finish)
         env:
