@@ -24,7 +24,7 @@ jobs:
       - name: Set up Buildx Builder for Local
         uses: docker/setup-buildx-action@v3
         with:
-          builder-name: localbuilder
+          name: localbuilder
           buildkitd-flags: --debug
           install: true
 
@@ -34,12 +34,15 @@ jobs:
           context: ${{ env.BUILD_DIR }}
           push: true
           tags: ${{ env.IMAGE_NAME }}
-          builder: localbuilder
 
       - name: Set up Buildx Builder for Public
         uses: docker/setup-buildx-action@v3
         with:
-          builder-name: publicbuilder
+          name: publicbuilder
+          install: true
+
+      - name: Use Public Builder
+        run: docker buildx use publicbuilder
 
       - name: Build and Push to Public Registry
         uses: docker/build-push-action@v5
@@ -47,9 +50,6 @@ jobs:
           context: ${{ env.BUILD_DIR }}
           push: true
           tags: ${{ env.PUBLIC_IMAGE_NAME }}
-          builder: publicbuilder
-          buildkitd-flags: --debug
-          install: true
 
       - name: Set up kubectl
         uses: azure/setup-kubectl@v3
