@@ -65,51 +65,53 @@ export default function Navbar() {
             >
               SkillSwap
             </button>
-            <ul
-              tabIndex={0}
-              className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
-            >
-              <li>
-                <a
-                  onClick={() => navigate("/")}
-                  className={`inter-400 text-sm ${
-                    currentPage === "Home" && "text-primary"
-                  }`}
-                >
-                  Home
-                </a>
-              </li>
-              <li>
-                <a
-                  onClick={() => navigate("/browse")}
-                  className={`inter-400 text-sm ${
-                    currentPage === "Browse" && "text-primary"
-                  }`}
-                >
-                  Browse
-                </a>
-              </li>
-              <li>
-                <a
-                  onClick={() => navigate("/messages")}
-                  className={`inter-400 text-sm ${
-                    currentPage === "Messages" && "text-primary"
-                  }`}
-                >
-                  Messages
-                </a>
-              </li>
-              <li>
-                <a
-                  onClick={() => navigate("/requests")}
-                  className={`inter-400 text-sm ${
-                    currentPage === "Request" && "text-primary"
-                  }`}
-                >
-                  Requests Swap
-                </a>
-              </li>
-            </ul>
+            {user?.id && (
+              <ul
+                tabIndex={0}
+                className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
+              >
+                <li>
+                  <a
+                    onClick={() => navigate("/")}
+                    className={`inter-400 text-sm ${
+                      currentPage === "Home" && "text-primary"
+                    }`}
+                  >
+                    Home
+                  </a>
+                </li>
+                <li>
+                  <a
+                    onClick={() => navigate("/browse")}
+                    className={`inter-400 text-sm ${
+                      currentPage === "Browse" && "text-primary"
+                    }`}
+                  >
+                    Browse
+                  </a>
+                </li>
+                <li>
+                  <a
+                    onClick={() => navigate("/messages")}
+                    className={`inter-400 text-sm ${
+                      currentPage === "Messages" && "text-primary"
+                    }`}
+                  >
+                    Messages
+                  </a>
+                </li>
+                <li>
+                  <a
+                    onClick={() => navigate("/requests")}
+                    className={`inter-400 text-sm ${
+                      currentPage === "Request" && "text-primary"
+                    }`}
+                  >
+                    Requests Swap
+                  </a>
+                </li>
+              </ul>
+            )}
           </div>
         </div>
         <div className="flex gap-2">
